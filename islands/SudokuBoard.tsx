@@ -1,24 +1,36 @@
-import { h } from "preact";
+import { h as _h } from "preact";
 import { useState } from "preact/hooks";
+import { BOARD_SIZE } from "../constants.ts";
+import type {
+  Board,
+  CellValue,
+  ImmutableGrid,
+  Row,
+  SudokuBoardProps,
+} from "../types/sudoku.ts";
+import { createEmptyBoard } from "../utils/sudokuGenerator.ts";
 
-const BOARD_SIZE = 9;
-
-function createEmptyBoard() {
-  return Array.from(
-    { length: BOARD_SIZE },
-    () => Array.from({ length: BOARD_SIZE }, () => ""),
+const SudokuBoard = ({ initialBoard }: SudokuBoardProps) => {
+  const [board, setBoard] = useState<Board>(initialBoard || createEmptyBoard());
+  const [immutableCells] = useState<ImmutableGrid>(() =>
+    Array.from(
+      { length: BOARD_SIZE },
+      (_, row) =>
+        Array.from({ length: BOARD_SIZE }, (_, col) =>
+          initialBoard ? initialBoard[row][col] !== "" : false),
+    ) as ImmutableGrid
   );
-}
-
-const SudokuBoard = () => {
-  const [board, setBoard] = useState<string[][]>(createEmptyBoard());
 
   const handleChange = (row: number, col: number, value: string) => {
+    if (immutableCells[row][col]) return; // Prevent changes to immutable cells
+
     // Only allow digits 1-9 or empty
     if (value === "" || (/^[1-9]$/.test(value) && value.length === 1)) {
       const newBoard = board.map((r, i) =>
-        r.map((cell, j) => (i === row && j === col ? value : cell))
-      );
+        r.map((cell, j) => (i === row && j === col ? value : cell)) as Row<
+          CellValue
+        >
+      ) as Board;
       setBoard(newBoard);
     }
   };
@@ -54,7 +66,12 @@ const SudokuBoard = () => {
                     border: "none",
                     fontSize: 18,
                     background: "transparent",
+                    fontWeight: immutableCells[rowIdx][colIdx]
+                      ? "bold"
+                      : "normal",
+                    color: immutableCells[rowIdx][colIdx] ? "#000" : "#666",
                   }}
+                  readOnly={immutableCells[rowIdx][colIdx]}
                   onChange={(e) => {
                     const target = e.target as HTMLInputElement | null;
                     if (target) {

@@ -1,0 +1,3 @@
+- pattern: "import { * } from"
+  replacement: "import type { * } from"
+  description: "Use type imports for TypeScript types"
