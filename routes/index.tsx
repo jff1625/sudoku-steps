@@ -1,4 +1,4 @@
-import SudokuGame from "../islands/SudokuGame.tsx";
+import { SudokuGame } from "../islands/SudokuGame.tsx";
 import { generateSudoku } from "../utils/sudokuGenerator.ts";
 
 export default function Home() {

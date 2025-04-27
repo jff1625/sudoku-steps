@@ -1,42 +1,62 @@
 import { useEffect, useRef } from "preact/hooks";
+import { CellValue } from "../types/sudoku.ts";
 
 type NumberPadProps = {
-  onSelect: (num: string | null) => void;
-  selected: string | null;
+  onSelect: (num: CellValue, pencil: boolean, eraser: boolean) => void;
+  selectedNumber: CellValue;
+  pencilEnabled: boolean;
+  eraserEnabled: boolean;
   gridRef?: preact.RefObject<HTMLElement>;
 };
 
-export default function NumberPad(
-  { onSelect, selected, gridRef }: NumberPadProps,
-) {
-  const numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+export const NumberPad = (
+  { onSelect, selectedNumber, pencilEnabled, eraserEnabled, gridRef }:
+    NumberPadProps,
+) => {
+  const numbers: CellValue[] = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const target = event.target as Node;
-      // If click is inside NumberPad, ignore
       if (containerRef.current && containerRef.current.contains(target)) return;
-      // If click is inside grid, ignore
       if (gridRef && gridRef.current && gridRef.current.contains(target)) {
         return;
       }
-      // Otherwise, deselect
-      if (selected !== null) {
-        onSelect(null);
+      // Deselect everything
+      if (selectedNumber !== null || pencilEnabled) {
+        onSelect("", false, false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [selected, onSelect, gridRef]);
+  }, [selectedNumber, pencilEnabled, onSelect, gridRef]);
 
   return (
     <div
       ref={containerRef}
       style={{ display: "flex", gap: 8, margin: "16px 0" }}
     >
+      <button
+        type="button"
+        style={{
+          width: 32,
+          height: 32,
+          fontSize: 18,
+          fontWeight: "bold",
+          borderRadius: 4,
+          border: pencilEnabled ? "2px solid #3b82f6" : "1px solid #ccc",
+          background: pencilEnabled ? "#dbeafe" : "#fff",
+          color: "#222",
+          cursor: "pointer",
+        }}
+        title="Pencil"
+        onClick={() => onSelect(selectedNumber, !pencilEnabled, !eraserEnabled)}
+      >
+        ✏️
+      </button>
       {numbers.map((num) => (
         <button
           key={num}
@@ -47,12 +67,15 @@ export default function NumberPad(
             fontSize: 18,
             fontWeight: "bold",
             borderRadius: 4,
-            border: selected === num ? "2px solid #22c55e" : "1px solid #ccc",
-            background: selected === num ? "#bbf7d0" : "#fff",
+            border: selectedNumber === num
+              ? "2px solid #22c55e"
+              : "1px solid #ccc",
+            background: selectedNumber === num ? "#bbf7d0" : "#fff",
             color: "#222",
             cursor: "pointer",
           }}
-          onClick={() => onSelect(selected === num ? null : num)}
+          onClick={() =>
+            onSelect(selectedNumber === num ? "" : num, pencilEnabled, false)}
         >
           {num}
         </button>
@@ -65,16 +88,16 @@ export default function NumberPad(
           fontSize: 18,
           fontWeight: "bold",
           borderRadius: 4,
-          border: selected === null ? "2px solid #22c55e" : "1px solid #ccc",
-          background: selected === null ? "#bbf7d0" : "#fff",
+          border: eraserEnabled ? "2px solid #22c55e" : "1px solid #ccc",
+          background: eraserEnabled ? "#bbf7d0" : "#fff",
           color: "#222",
           cursor: "pointer",
         }}
         title="Eraser"
-        onClick={() => onSelect("eraser")}
+        onClick={() => onSelect("", false, true)}
       >
         🧹
       </button>
     </div>
   );
-}
+};
