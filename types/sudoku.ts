@@ -25,7 +25,7 @@ export type Grid<T> = [
 ];
 
 export type Board = Grid<CellValue>;
-export type ImmutableGrid = Grid<boolean>;
+export type LockedGrid = Grid<boolean>;
 
 export interface SudokuBoardProps {
   initialBoard?: Board;

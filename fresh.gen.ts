@@ -7,8 +7,9 @@ import * as $_app from "./routes/_app.tsx";
 import * as $api_joke from "./routes/api/joke.ts";
 import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
-import * as $Counter from "./islands/Counter.tsx";
-import * as $SudokuBoard from "./islands/SudokuBoard.tsx";
+import * as $NumberPad from "./islands/NumberPad.tsx";
+import * as $SudokuGame from "./islands/SudokuGame.tsx";
+import * as $SudokuGrid from "./islands/SudokuGrid.tsx";
 import type { Manifest } from "$fresh/server.ts";
 
 const manifest = {
@@ -20,8 +21,9 @@ const manifest = {
     "./routes/index.tsx": $index,
   },
   islands: {
-    "./islands/Counter.tsx": $Counter,
-    "./islands/SudokuBoard.tsx": $SudokuBoard,
+    "./islands/NumberPad.tsx": $NumberPad,
+    "./islands/SudokuGame.tsx": $SudokuGame,
+    "./islands/SudokuGrid.tsx": $SudokuGrid,
   },
   baseUrl: import.meta.url,
 } satisfies Manifest;
