@@ -1,14 +1,11 @@
 import { BOARD_SIZE } from "../constants.ts";
-import type { Board, CellValue, Row } from "../types/sudoku.ts";
+import type { Board, CellValue } from "../types/sudoku.ts";
 
 export function createEmptyBoard(): Board {
   return Array.from(
     { length: BOARD_SIZE },
-    () =>
-      Array.from({ length: BOARD_SIZE }, () => "" as CellValue) as Row<
-        CellValue
-      >,
-  ) as Board;
+    () => Array.from({ length: BOARD_SIZE }, () => ""),
+  ) as unknown as Board;
 }
 
 function shuffle<T>(array: T[]): T[] {
@@ -20,33 +17,37 @@ function shuffle<T>(array: T[]): T[] {
   return array;
 }
 
-function isValid(board: Board, row: number, col: number, num: number): boolean {
-  const numStr = num.toString() as CellValue;
+function isCellValueValid(
+  board: Board,
+  row: number,
+  col: number,
+  value: CellValue,
+): boolean {
   for (let i = 0; i < BOARD_SIZE; i++) {
-    if (board[row][i] === numStr || board[i][col] === numStr) return false;
+    if (board[row][i].value === value || board[i][col].value === value) {
+      return false;
+    }
   }
   const boxRow = Math.floor(row / 3) * 3;
   const boxCol = Math.floor(col / 3) * 3;
   for (let i = 0; i < 3; i++) {
     for (let j = 0; j < 3; j++) {
-      if (board[boxRow + i][boxCol + j] === numStr) return false;
+      if (board[boxRow + i][boxCol + j].value === value) return false;
     }
   }
   return true;
 }
 
 function fillBoard(board: Board): boolean {
-  const nums = shuffle(
-    ["1", "2", "3", "4", "5", "6", "7", "8", "9"] as CellValue[],
-  );
+  const nums: CellValue[] = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]);
   for (let row = 0; row < BOARD_SIZE; row++) {
     for (let col = 0; col < BOARD_SIZE; col++) {
-      if (board[row][col] === "") {
+      if (board[row][col].value === "") {
         for (const num of nums) {
-          if (isValid(board, row, col, Number(num))) {
-            board[row][col] = num;
+          if (isCellValueValid(board, row, col, num)) {
+            board[row][col].value = num;
             if (fillBoard(board)) return true;
-            board[row][col] = "" as CellValue;
+            board[row][col].value = "";
           }
         }
         return false;
@@ -67,8 +68,8 @@ export function generateSudoku(difficulty: number = 0.5): Board {
   while (removed < cellsToRemove) {
     const row = Math.floor(Math.random() * BOARD_SIZE);
     const col = Math.floor(Math.random() * BOARD_SIZE);
-    if (board[row][col] !== "") {
-      board[row][col] = "" as CellValue;
+    if (board[row][col].value !== "") {
+      board[row][col] = { value: "", pencilmarks: new Set() };
       removed++;
     }
   }

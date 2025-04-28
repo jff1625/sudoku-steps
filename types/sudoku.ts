@@ -26,20 +26,17 @@ export type Grid<T> = [
 export type Row<T> = [T, T, T, T, T, T, T, T, T];
 
 export type CellData = {
-  number: CellValue;
+  value: CellValue;
   pencilmarks: Set<PencilmarkValue>;
 };
 
-export type CellValue =
-  | ""
-  | "1"
-  | "2"
-  | "3"
-  | "4"
-  | "5"
-  | "6"
-  | "7"
-  | "8"
-  | "9";
+export type CellValue = "" | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
 export type PencilmarkValue = Exclude<CellValue, "">;
+
+export interface CellUpdateProps {
+  row: number;
+  col: number;
+  value: CellValue;
+  pencilmarks?: Set<PencilmarkValue>;
+}

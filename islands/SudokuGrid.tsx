@@ -1,5 +1,11 @@
 import { useState } from "preact/hooks";
-import type { Board, CellData, SudokuGridProps } from "../types/sudoku.ts";
+import type {
+  Board,
+  CellData,
+  CellUpdateProps,
+  CellValue,
+  SudokuGridProps,
+} from "../types/sudoku.ts";
 import { Cell } from "./Cell.tsx";
 
 const isCellIllegal = (
@@ -8,15 +14,15 @@ const isCellIllegal = (
   colIdx: number,
 ): boolean => {
   const cell = board[rowIdx][colIdx];
-  if (!cell.number || !/^[1-9]$/.test(cell.number)) return false;
+  if (cell.value === "" || typeof cell.value !== "number") return false;
 
   // Check row
   for (let c = 0; c < 9; c++) {
-    if (c !== colIdx && board[rowIdx][c].number === cell.number) return true;
+    if (c !== colIdx && board[rowIdx][c].value === cell.value) return true;
   }
   // Check column
   for (let r = 0; r < 9; r++) {
-    if (r !== rowIdx && board[r][colIdx].number === cell.number) return true;
+    if (r !== rowIdx && board[r][colIdx].value === cell.value) return true;
   }
   // Check box
   const boxRow = Math.floor(rowIdx / 3) * 3;
@@ -24,7 +30,7 @@ const isCellIllegal = (
   for (let r = boxRow; r < boxRow + 3; r++) {
     for (let c = boxCol; c < boxCol + 3; c++) {
       if (
-        (r !== rowIdx || c !== colIdx) && board[r][c].number === cell.number
+        (r !== rowIdx || c !== colIdx) && board[r][c].value === cell.value
       ) return true;
     }
   }
@@ -32,8 +38,8 @@ const isCellIllegal = (
 };
 
 const isCellHighlighted = (
-  cellValue: string,
-  selectedNumber: string | null,
+  cellValue: CellValue,
+  selectedNumber: CellValue,
 ): boolean => {
   return cellValue === selectedNumber;
 };
@@ -44,7 +50,7 @@ function isCellLocked(
   initialBoard?: Board,
 ): boolean {
   if (!initialBoard) return false;
-  return initialBoard[rowIdx][colIdx].number !== "";
+  return initialBoard[rowIdx][colIdx].value !== "";
 }
 
 export function SudokuGrid({
@@ -55,26 +61,29 @@ export function SudokuGrid({
 }: SudokuGridProps) {
   const [board, setBoard] = useState<Board>(initialBoard);
 
-  const handleCellClick = (row: number, col: number) => {
-    if (selectedNumber) {
-      handleChange(row, col, selectedNumber);
-    }
-  };
-
-  const handleCellChange = (row: number, col: number, value: string) => {
-    // Implement your cell update logic here, e.g.:
-    // - Update number or pencilmarks
-    // - Handle eraser/pencil logic
-    // - Call onCellChange if you want to notify parent
-    // Example for number update:
+  // Accepts an object with optional value and pencilmarks
+  const handleCellChange = (
+    props: CellUpdateProps,
+  ) => {
+    const {
+      row,
+      col,
+      value,
+      pencilmarks,
+    } = props;
     setBoard((prev) =>
       prev.map((r, i) =>
-        r.map((cell, j) =>
-          i === row && j === col ? { ...cell, number: value } : cell
-        ) as typeof r
+        r.map((cell, j) => {
+          if (i !== row || j !== col) return cell;
+          const updated = { ...cell };
+          if (value !== undefined) updated.value = value;
+          if (props.pencilmarks !== undefined) {
+            updated.pencilmarks = new Set(pencilmarks);
+          }
+          return updated;
+        })
       ) as Board
     );
-    if (onCellChange) onCellChange(row, col, value);
   };
 
   return (
@@ -84,16 +93,15 @@ export function SudokuGrid({
           <tr key={rowIdx}>
             {row.map((cell: CellData, colIdx) => (
               <Cell
-                key={colIdx}
-                number={cell.number}
+                key={`${colIdx}${rowIdx}`}
+                value={cell.value}
                 pencilmarks={cell.pencilmarks}
                 board={board}
                 rowIdx={rowIdx}
                 colIdx={colIdx}
                 illegal={isCellIllegal(board, rowIdx, colIdx)}
-                highlight={isCellHighlighted(cell.number, selectedNumber)}
+                highlight={isCellHighlighted(cell.value, selectedNumber)}
                 locked={isCellLocked(rowIdx, colIdx, initialBoard)}
-                onCellClick={handleCellClick}
                 onCellChange={handleCellChange}
                 selectedNumber={selectedNumber}
                 pencilEnabled={pencilEnabled}

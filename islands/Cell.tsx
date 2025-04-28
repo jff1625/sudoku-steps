@@ -1,8 +1,8 @@
-import type { Board } from "../types/sudoku.ts";
+import type { Board, CellUpdateProps } from "../types/sudoku.ts";
 import { CellValue, PencilmarkValue } from "../types/sudoku.ts";
 
 type CellProps = {
-  number: CellValue;
+  value: CellValue;
   pencilmarks: Set<PencilmarkValue>;
   board: Board;
   rowIdx: number;
@@ -10,8 +10,7 @@ type CellProps = {
   illegal: boolean;
   highlight: boolean;
   locked: boolean;
-  onCellClick: (row: number, col: number) => void;
-  onCellChange: (row: number, col: number, value: string) => void;
+  onCellChange: (props: CellUpdateProps) => void;
   selectedNumber: CellValue;
   pencilEnabled: boolean;
   eraserEnabled: boolean;
@@ -21,13 +20,11 @@ export function CellComponent(props: CellProps) {
   const {
     rowIdx,
     colIdx,
-    number,
+    value,
     pencilmarks,
     illegal,
     highlight,
     locked,
-    onCellClick,
-    onCellChange,
     selectedNumber,
     pencilEnabled,
     eraserEnabled,
@@ -36,28 +33,29 @@ export function CellComponent(props: CellProps) {
 
   function handleCellClickInternal() {
     if (locked) return;
+    let newValue = value;
+    let newPencilmarks = pencilmarks;
     if (eraserEnabled) {
-      onCellChange(rowIdx, colIdx, "");
-    } else if (
-      pencilEnabled && selectedNumber && /^[1-9]$/.test(selectedNumber)
+      newValue = "";
+    }
+    if (
+      pencilEnabled && selectedNumber !== ""
     ) {
-      // Toggle pencilmark for this cell/number
-      const newPencilmarks = new Set(pencilmarks);
+      newPencilmarks = new Set(pencilmarks);
       if (newPencilmarks.has(selectedNumber)) {
         newPencilmarks.delete(selectedNumber);
       } else {
         newPencilmarks.add(selectedNumber);
       }
-      // Use a special string to indicate pencilmark change
-      onCellChange(
-        rowIdx,
-        colIdx,
-        "__PENCIL__:" +
-          Array.from(newPencilmarks).sort().join(""),
-      );
-    } else if (selectedNumber !== null) {
-      onCellClick(rowIdx, colIdx);
     }
+    props.onCellChange(
+      {
+        row: rowIdx,
+        col: colIdx,
+        value: newValue,
+        pencilmarks: newPencilmarks,
+      },
+    );
   }
 
   return (
@@ -88,7 +86,7 @@ export function CellComponent(props: CellProps) {
       ].join(" ")}
       onClick={handleCellClickInternal}
     >
-      {hasPencilmarks && number === ""
+      {hasPencilmarks && value === ""
         ? (
           <div
             className="w-full h-full grid grid-cols-3 grid-rows-3"
@@ -99,7 +97,7 @@ export function CellComponent(props: CellProps) {
             }}
           >
             {Array.from({ length: 9 }, (_, i) => {
-              const n = (i + 1).toString() as PencilmarkValue;
+              const n = (i + 1) as PencilmarkValue;
               return (
                 <div
                   key={n}
@@ -115,7 +113,7 @@ export function CellComponent(props: CellProps) {
         : (
           <input
             type="text"
-            value={number}
+            value={value}
             maxLength={1}
             className={[
               "w-full h-full text-center border-none text-base bg-transparent focus:outline-none",
@@ -132,11 +130,14 @@ export function CellComponent(props: CellProps) {
             onChange={(e) => {
               const target = e.target as HTMLInputElement | null;
               if (target) {
-                onCellChange(
-                  rowIdx,
-                  colIdx,
-                  target.value.replace(/[^1-9]/, ""),
-                );
+                // Accept only 1-9, convert to number, or "" if empty/invalid
+                const v = target.value.replace(/[^1-9]/g, "");
+                props.onCellChange({
+                  row: rowIdx,
+                  col: colIdx,
+                  value: v === "" ? "" : Number(v) as CellValue,
+                  pencilmarks,
+                });
               }
             }}
           />
