@@ -1,5 +1,9 @@
-import type { Board, CellUpdateProps } from "../types/sudoku.ts";
-import { CellValue, PencilmarkValue } from "../types/sudoku.ts";
+import type {
+  Board,
+  CellUpdateProps,
+  CellValue,
+  PencilmarkValue,
+} from "../types/sudoku.ts";
 
 type CellProps = {
   value: CellValue;

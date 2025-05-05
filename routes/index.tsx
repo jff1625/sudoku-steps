@@ -1,8 +1,8 @@
 import { SudokuGame } from "../islands/SudokuGame.tsx";
-import { generateSudoku } from "../utils/sudokuGenerator.ts";
+import { generateScanPracticeBoard } from "../generators/scanPracticeGenerator.ts";
 
 export default function Home() {
-  const board = generateSudoku();
+  const board = generateScanPracticeBoard();
 
   return (
     <div class="px-4 py-8 mx-auto bg-[#86efac]">

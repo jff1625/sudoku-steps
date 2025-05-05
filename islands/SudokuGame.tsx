@@ -2,7 +2,7 @@ import { useRef } from "preact/hooks";
 import { cellCounts, hasIllegalCells } from "../signals.ts";
 
 import type { SudokuGameProps } from "../types/sudoku.ts";
-import { createEmptyBoard } from "../utils/sudokuGenerator.ts";
+import { createEmptyBoard } from "../generators/utils/createEmptyBoard.ts";
 import { NumberPad } from "./NumberPad.tsx";
 import { SudokuGrid } from "./SudokuGrid.tsx";
 

@@ -11,19 +11,19 @@ export interface SudokuGridProps {
 
 export type Board = Grid<CellData>;
 
+// Outer array is columns, inner array is rows
 export type Grid<T> = [
-  Row<T>,
-  Row<T>,
-  Row<T>,
-  Row<T>,
-  Row<T>,
-  Row<T>,
-  Row<T>,
-  Row<T>,
-  Row<T>,
+  Col<T>,
+  Col<T>,
+  Col<T>,
+  Col<T>,
+  Col<T>,
+  Col<T>,
+  Col<T>,
+  Col<T>,
+  Col<T>,
 ];
-
-export type Row<T> = [T, T, T, T, T, T, T, T, T];
+export type Col<T> = [T, T, T, T, T, T, T, T, T];
 
 export type CellData = {
   value: CellValue;
@@ -42,3 +42,11 @@ export interface CellUpdateProps extends CellData {
 }
 
 export type CellCounts = Record<number, number>;
+
+export interface ScanPracticeParams {
+  x?: number;
+  y?: number;
+  targetValue?: CellValue;
+  order?: "increasing" | "decreasing";
+  scanDirection?: "horizontal" | "vertical";
+}

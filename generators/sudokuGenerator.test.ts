@@ -1,20 +1,6 @@
 import { assert } from "https://deno.land/std@0.224.0/assert/assert.ts";
-import { assertEquals } from "https://deno.land/std@0.224.0/assert/assert_equals.ts";
-import { createEmptyBoard, generateSudoku } from "./sudokuGenerator.ts";
+import { generateSudoku } from "./sudokuGenerator.ts";
 import { BOARD_SIZE } from "../constants.ts";
-
-Deno.test("createEmptyBoard returns a 9x9 board of empty cells", () => {
-  const board = createEmptyBoard();
-  assertEquals<number>(board.length, BOARD_SIZE);
-  for (const row of board) {
-    assertEquals(row.length, BOARD_SIZE);
-    for (const cell of row) {
-      assertEquals(cell.value, "");
-      assert(Array.isArray(cell.pencilmarks));
-      assertEquals(cell.pencilmarks.length, 0);
-    }
-  }
-});
 
 Deno.test("generateSudoku returns a board with correct number of empty cells (medium)", () => {
   const difficulty = 0.5;

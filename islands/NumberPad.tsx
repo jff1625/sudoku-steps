@@ -5,7 +5,7 @@ import {
   selectedNumber,
 } from "../signals.ts";
 import { useEffect, useRef } from "preact/hooks";
-import { Numbers } from "../types/sudoku.ts";
+import type { Numbers } from "../types/sudoku.ts";
 
 type NumberPadProps = {
   gridRef: preact.RefObject<HTMLTableElement>;

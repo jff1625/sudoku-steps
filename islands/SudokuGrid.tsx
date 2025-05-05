@@ -9,7 +9,6 @@ import {
 import type {
   Board,
   CellCounts,
-  CellData,
   CellUpdateProps,
   CellValue,
   SudokuGridProps,
@@ -21,16 +20,16 @@ const isCellIllegal = (
   rowIdx: number,
   colIdx: number,
 ): boolean => {
-  const cell = board[rowIdx][colIdx];
+  const cell = board[colIdx][rowIdx];
   if (cell.value === "" || typeof cell.value !== "number") return false;
 
   // Check row
   for (let c = 0; c < 9; c++) {
-    if (c !== colIdx && board[rowIdx][c].value === cell.value) return true;
+    if (c !== colIdx && board[c][rowIdx].value === cell.value) return true;
   }
   // Check column
   for (let r = 0; r < 9; r++) {
-    if (r !== rowIdx && board[r][colIdx].value === cell.value) return true;
+    if (r !== rowIdx && board[colIdx][r].value === cell.value) return true;
   }
   // Check box
   const boxRow = Math.floor(rowIdx / 3) * 3;
@@ -38,7 +37,7 @@ const isCellIllegal = (
   for (let r = boxRow; r < boxRow + 3; r++) {
     for (let c = boxCol; c < boxCol + 3; c++) {
       if (
-        (r !== rowIdx || c !== colIdx) && board[r][c].value === cell.value
+        (r !== rowIdx || c !== colIdx) && board[c][r].value === cell.value
       ) return true;
     }
   }
@@ -59,7 +58,7 @@ function isCellLocked(
   initialBoard?: Board,
 ): boolean {
   if (!initialBoard) return false;
-  return initialBoard[rowIdx][colIdx].value !== "";
+  return initialBoard[colIdx][rowIdx].value !== "";
 }
 
 function countCells(board: Board): CellCounts {
@@ -74,8 +73,8 @@ function countCells(board: Board): CellCounts {
     8: 0,
     9: 0,
   };
-  for (const row of board) {
-    for (const cell of row) {
+  for (const col of board) {
+    for (const cell of col) {
       if (typeof cell.value === "number") {
         counts[cell.value]++;
       }
@@ -112,9 +111,9 @@ export function SudokuGrid({
       pencilmarks,
     } = props;
     setBoard((prev) => {
-      const newBoard = prev.map((r, i) =>
-        r.map((cell, j) => {
-          if (i !== row || j !== col) return cell;
+      const newBoard = prev.map((c, i) =>
+        c.map((cell, j) => {
+          if (i !== col || j !== row) return cell;
           const updated = { ...cell };
           if (value !== undefined) updated.value = value;
           if (props.pencilmarks !== undefined) {
@@ -133,18 +132,21 @@ export function SudokuGrid({
   return (
     <table className="border-collapse" ref={gridRef}>
       <tbody>
-        {board.map((row, rowIdx) => (
+        {[...Array(9)].map((_, rowIdx) => (
           <tr key={rowIdx}>
-            {row.map((cell: CellData, colIdx) => (
+            {[...Array(9)].map((_, colIdx) => (
               <Cell
                 key={`${colIdx}-${rowIdx}`}
-                value={cell.value}
-                pencilmarks={cell.pencilmarks}
+                value={board[colIdx][rowIdx].value}
+                pencilmarks={board[colIdx][rowIdx].pencilmarks}
                 board={board}
                 rowIdx={rowIdx}
                 colIdx={colIdx}
                 illegal={isCellIllegal(board, rowIdx, colIdx)}
-                highlight={isCellHighlighted(cell.value, selectedNumber.value)}
+                highlight={isCellHighlighted(
+                  board[colIdx][rowIdx].value,
+                  selectedNumber.value,
+                )}
                 locked={isCellLocked(rowIdx, colIdx, initialBoard)}
                 onCellChange={handleCellChange}
                 selectedNumber={selectedNumber.value}
