@@ -9,8 +9,8 @@ type CellProps = {
   value: CellValue;
   pencilmarks: PencilmarkValue[];
   board: Board;
-  rowIdx: number;
-  colIdx: number;
+  x: number;
+  y: number;
   illegal: boolean;
   highlight: boolean;
   locked: boolean;
@@ -22,8 +22,8 @@ type CellProps = {
 
 export function Cell(props: CellProps) {
   const {
-    rowIdx,
-    colIdx,
+    x,
+    y,
     value,
     pencilmarks,
     illegal,
@@ -35,7 +35,7 @@ export function Cell(props: CellProps) {
   } = props;
   const hasPencilmarks = pencilmarks && pencilmarks.length > 0;
 
-  // console.log("Cell", rowIdx, colIdx, value, selectedNumber);
+  // console.log("Cell", x, y, value, selectedNumber);
 
   function handleCellClickInternal() {
     if (locked) return;
@@ -56,12 +56,10 @@ export function Cell(props: CellProps) {
         newValue = selectedNumber;
       }
     }
-
-    // console.log("handleCellClickInternal ", selectedNumber, value, newValue);
     props.onCellChange(
       {
-        row: rowIdx,
-        col: colIdx,
+        x: x,
+        y: y,
         value: newValue,
         pencilmarks: newPencilmarks,
       },
@@ -70,22 +68,18 @@ export function Cell(props: CellProps) {
 
   return (
     <td
-      key={colIdx}
+      key={x}
       className={[
         "w-8 h-8 p-0 text-center align-middle",
-        rowIdx % 3 === 0
-          ? "border-t-2 border-gray-800"
-          : "border-t border-gray-800",
-        colIdx % 3 === 0
-          ? "border-l-2 border-gray-800"
-          : "border-l border-gray-800",
-        rowIdx === 8 ? "border-b-2 border-gray-800" : "",
-        colIdx === 8 ? "border-r-2 border-gray-800" : "",
+        y % 3 === 0 ? "border-t-2 border-gray-800" : "border-t border-gray-800",
+        x % 3 === 0 ? "border-l-2 border-gray-800" : "border-l border-gray-800",
+        y === 8 ? "border-b-2 border-gray-800" : "",
+        x === 8 ? "border-r-2 border-gray-800" : "",
         illegal && !hasPencilmarks
           ? "bg-red-200"
           : highlight && !hasPencilmarks
           ? "bg-blue-200"
-          : (Math.floor(rowIdx / 3) + Math.floor(colIdx / 3)) % 2 === 0
+          : (Math.floor(y / 3) + Math.floor(x / 3)) % 2 === 0
           ? "bg-white"
           : "bg-gray-100",
         locked
@@ -143,8 +137,8 @@ export function Cell(props: CellProps) {
                 // Accept only 1-9, convert to number, or "" if empty/invalid
                 const v = target.value.replace(/[^1-9]/g, "");
                 props.onCellChange({
-                  row: rowIdx,
-                  col: colIdx,
+                  x: x,
+                  y: y,
                   value: v === "" ? "" : Number(v) as CellValue,
                   pencilmarks,
                 });

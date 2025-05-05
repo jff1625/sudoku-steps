@@ -1,26 +1,53 @@
-import { useRef } from "preact/hooks";
-import { cellCounts, hasIllegalCells } from "../signals.ts";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
+import { cellCounts, hasIllegalCells, targetCellValue } from "../signals.ts";
+import { match } from "ts-pattern";
 
-import type { SudokuGameProps } from "../types/sudoku.ts";
-import { createEmptyBoard } from "../generators/utils/createEmptyBoard.ts";
+import type { SudokuGameProps, SudokuNumbers } from "../types/sudoku.ts";
 import { NumberPad } from "./NumberPad.tsx";
 import { SudokuGrid } from "./SudokuGrid.tsx";
+import { generateSudoku } from "../generators/sudokuGenerator.ts";
+import { generateScanPracticeBoard } from "../generators/scanPracticeGenerator.ts";
+import { randomFrom } from "../generators/utils/randomFrom.ts";
 
 export const SudokuGame = (
-  { initialBoard = createEmptyBoard() }: SudokuGameProps,
+  {
+    gameMode,
+  }: SudokuGameProps,
 ) => {
-  console.log("SudokuGame rendered");
   const gridRef = useRef<HTMLTableElement>(null);
 
-  // Win condition: all cellCounts are 9 and hasIllegalCells is false
-  const isWin = !hasIllegalCells.value &&
-    Object.values(cellCounts.value).every((v) => v === 9);
+  const { board, targetCell, winCondition } = useMemo(() =>
+    match(gameMode)
+      .with("band", () => {
+        const x = randomFrom(0, 8);
+        const y = randomFrom(0, 8);
+        const targetValue = randomFrom(1, 9) as SudokuNumbers;
+        return {
+          board: generateScanPracticeBoard({ x, y, targetValue }),
+          targetCell: { x, y },
+          winCondition: () => targetCellValue.value === targetValue,
+        };
+      })
+      .otherwise(() => ({
+        board: generateSudoku(),
+        targetCell: null,
+        winCondition: () =>
+          !hasIllegalCells.value &&
+          Object.values(cellCounts.value).every((v) => v === 9),
+      })), [gameMode]);
+
+  const [isWin, setIsWin] = useState(false);
+
+  useEffect(() => {
+    setIsWin(winCondition());
+  }, [winCondition, cellCounts.value, hasIllegalCells.value]);
 
   return (
     <div>
       <SudokuGrid
-        initialBoard={initialBoard}
+        initialBoard={board}
         gridRef={gridRef}
+        targetCell={targetCell}
       />
       <NumberPad
         gridRef={gridRef}

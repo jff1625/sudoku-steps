@@ -16,3 +16,4 @@ export const cellCounts = signal<CellCounts>({
   9: 0,
 });
 export const hasIllegalCells = signal(false);
+export const targetCellValue = signal<CellValue>("");

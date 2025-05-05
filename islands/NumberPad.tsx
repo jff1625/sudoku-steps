@@ -5,7 +5,7 @@ import {
   selectedNumber,
 } from "../signals.ts";
 import { useEffect, useRef } from "preact/hooks";
-import type { Numbers } from "../types/sudoku.ts";
+import type { SudokuNumbers } from "../types/sudoku.ts";
 
 type NumberPadProps = {
   gridRef: preact.RefObject<HTMLTableElement>;
@@ -14,7 +14,7 @@ type NumberPadProps = {
 export const NumberPad = (
   { gridRef }: NumberPadProps,
 ) => {
-  const numbers: Numbers[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const numbers: SudokuNumbers[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

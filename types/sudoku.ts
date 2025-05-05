@@ -1,12 +1,13 @@
 import type { RefObject } from "preact";
 
 export interface SudokuGameProps {
-  initialBoard?: Board;
+  gameMode: GameMode;
 }
 
 export interface SudokuGridProps {
   initialBoard: Board;
   gridRef: RefObject<HTMLTableElement>;
+  targetCell: CellCoords | null;
 }
 
 export type Board = Grid<CellData>;
@@ -30,15 +31,17 @@ export type CellData = {
   pencilmarks: PencilmarkValue[];
 };
 
-export type Numbers = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+export type SudokuNumbers = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
-export type CellValue = "" | Numbers;
+export type CellValue = "" | SudokuNumbers;
 
-export type PencilmarkValue = Numbers;
+export type PencilmarkValue = SudokuNumbers;
 
-export interface CellUpdateProps extends CellData {
-  row: number;
-  col: number;
+export type CellUpdateProps = CellData & CellCoords;
+
+export interface CellCoords {
+  x: number;
+  y: number;
 }
 
 export type CellCounts = Record<number, number>;
@@ -50,3 +53,10 @@ export interface ScanPracticeParams {
   order?: "increasing" | "decreasing";
   scanDirection?: "horizontal" | "vertical";
 }
+
+export type GameMode =
+  | "normal"
+  | "band";
+// | "band-2d"
+// | "single-candidate"
+// | "row";

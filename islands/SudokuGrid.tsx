@@ -5,6 +5,7 @@ import {
   hasIllegalCells,
   pencilEnabled,
   selectedNumber,
+  targetCellValue,
 } from "../signals.ts";
 import type {
   Board,
@@ -17,27 +18,27 @@ import { Cell } from "./Cell.tsx";
 
 const isCellIllegal = (
   board: Board,
-  rowIdx: number,
-  colIdx: number,
+  x: number,
+  y: number,
 ): boolean => {
-  const cell = board[colIdx][rowIdx];
+  const cell = board[x][y];
   if (cell.value === "" || typeof cell.value !== "number") return false;
 
-  // Check row
-  for (let c = 0; c < 9; c++) {
-    if (c !== colIdx && board[c][rowIdx].value === cell.value) return true;
+  // Check row (y)
+  for (let xx = 0; xx < 9; xx++) {
+    if (xx !== x && board[xx][y].value === cell.value) return true;
   }
-  // Check column
-  for (let r = 0; r < 9; r++) {
-    if (r !== rowIdx && board[colIdx][r].value === cell.value) return true;
+  // Check column (x)
+  for (let yy = 0; yy < 9; yy++) {
+    if (yy !== y && board[x][yy].value === cell.value) return true;
   }
   // Check box
-  const boxRow = Math.floor(rowIdx / 3) * 3;
-  const boxCol = Math.floor(colIdx / 3) * 3;
-  for (let r = boxRow; r < boxRow + 3; r++) {
-    for (let c = boxCol; c < boxCol + 3; c++) {
+  const boxY = Math.floor(y / 3) * 3;
+  const boxX = Math.floor(x / 3) * 3;
+  for (let yy = boxY; yy < boxY + 3; yy++) {
+    for (let xx = boxX; xx < boxX + 3; xx++) {
       if (
-        (r !== rowIdx || c !== colIdx) && board[c][r].value === cell.value
+        (yy !== y || xx !== x) && board[xx][yy].value === cell.value
       ) return true;
     }
   }
@@ -53,12 +54,12 @@ const isCellHighlighted = (
 };
 
 function isCellLocked(
-  rowIdx: number,
-  colIdx: number,
+  x: number,
+  y: number,
   initialBoard?: Board,
 ): boolean {
   if (!initialBoard) return false;
-  return initialBoard[colIdx][rowIdx].value !== "";
+  return initialBoard[x][y].value !== "";
 }
 
 function countCells(board: Board): CellCounts {
@@ -84,9 +85,9 @@ function countCells(board: Board): CellCounts {
 }
 
 function hasAnyIllegalCell(board: Board): boolean {
-  for (let row = 0; row < 9; row++) {
-    for (let col = 0; col < 9; col++) {
-      if (isCellIllegal(board, row, col)) return true;
+  for (let y = 0; y < 9; y++) {
+    for (let x = 0; x < 9; x++) {
+      if (isCellIllegal(board, x, y)) return true;
     }
   }
   return false;
@@ -95,6 +96,7 @@ function hasAnyIllegalCell(board: Board): boolean {
 export function SudokuGrid({
   initialBoard,
   gridRef,
+  targetCell,
 }: SudokuGridProps) {
   const [board, setBoard] = useState<Board>(initialBoard);
 
@@ -105,15 +107,15 @@ export function SudokuGrid({
     props: CellUpdateProps,
   ) => {
     const {
-      row,
-      col,
+      x,
+      y,
       value,
       pencilmarks,
     } = props;
     setBoard((prev) => {
-      const newBoard = prev.map((c, i) =>
-        c.map((cell, j) => {
-          if (i !== col || j !== row) return cell;
+      const newBoard = prev.map((col, xx) =>
+        col.map((cell, yy) => {
+          if (xx !== x || yy !== y) return cell;
           const updated = { ...cell };
           if (value !== undefined) updated.value = value;
           if (props.pencilmarks !== undefined) {
@@ -127,27 +129,31 @@ export function SudokuGrid({
       hasIllegalCells.value = hasAnyIllegalCell(newBoard);
       return newBoard;
     });
+
+    if (targetCell && targetCell.x === x && targetCell.y === y) {
+      targetCellValue.value = value;
+    }
   };
 
   return (
     <table className="border-collapse" ref={gridRef}>
       <tbody>
-        {[...Array(9)].map((_, rowIdx) => (
-          <tr key={rowIdx}>
-            {[...Array(9)].map((_, colIdx) => (
+        {[...Array(9)].map((_, y) => (
+          <tr key={y}>
+            {[...Array(9)].map((_, x) => (
               <Cell
-                key={`${colIdx}-${rowIdx}`}
-                value={board[colIdx][rowIdx].value}
-                pencilmarks={board[colIdx][rowIdx].pencilmarks}
+                key={`${x}-${y}`}
+                value={board[x][y].value}
+                pencilmarks={board[x][y].pencilmarks}
                 board={board}
-                rowIdx={rowIdx}
-                colIdx={colIdx}
-                illegal={isCellIllegal(board, rowIdx, colIdx)}
+                x={x}
+                y={y}
+                illegal={isCellIllegal(board, x, y)}
                 highlight={isCellHighlighted(
-                  board[colIdx][rowIdx].value,
+                  board[x][y].value,
                   selectedNumber.value,
                 )}
-                locked={isCellLocked(rowIdx, colIdx, initialBoard)}
+                locked={isCellLocked(x, y, initialBoard)}
                 onCellChange={handleCellChange}
                 selectedNumber={selectedNumber.value}
                 pencilEnabled={pencilEnabled.value}
