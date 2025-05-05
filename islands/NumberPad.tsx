@@ -1,6 +1,11 @@
-import { eraserEnabled, pencilEnabled, selectedNumber } from "../signals.ts";
+import {
+  cellCounts,
+  eraserEnabled,
+  pencilEnabled,
+  selectedNumber,
+} from "../signals.ts";
 import { useEffect, useRef } from "preact/hooks";
-import { CellValue } from "../types/sudoku.ts";
+import { Numbers } from "../types/sudoku.ts";
 
 type NumberPadProps = {
   gridRef: preact.RefObject<HTMLTableElement>;
@@ -9,7 +14,7 @@ type NumberPadProps = {
 export const NumberPad = (
   { gridRef }: NumberPadProps,
 ) => {
-  const numbers: CellValue[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const numbers: Numbers[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -53,24 +58,40 @@ export const NumberPad = (
       >
         ✏️
       </button>
-      {numbers.map((num) => (
-        <button
-          key={num.toString()}
-          type="button"
-          class={`w-8 h-8 text-lg font-bold rounded ${
-            selectedNumber.value === num
-              ? "border-2 border-green-500 bg-green-100"
-              : "border border-gray-300 bg-white"
-          } text-gray-900 cursor-pointer flex items-center justify-center`}
-          aria-pressed={selectedNumber.value === num}
-          onClick={() => {
-            selectedNumber.value = selectedNumber.value === num ? "" : num;
-            eraserEnabled.value = false;
-          }}
-        >
-          {num}
-        </button>
-      ))}
+      {numbers.map((num) => {
+        const usedUp: boolean = cellCounts.value[num] >= 9;
+        return (
+          <button
+            key={num.toString()}
+            type="button"
+            class={`w-8 h-8 text-lg font-bold rounded relative ${
+              selectedNumber.value === num
+                ? "border-2 border-green-500 bg-green-100"
+                : "border border-gray-300 bg-white"
+            } text-gray-900 cursor-pointer flex items-center justify-center`}
+            aria-pressed={selectedNumber.value === num}
+            onClick={() => {
+              selectedNumber.value = selectedNumber.value === num ? "" : num;
+              eraserEnabled.value = false;
+            }}
+            // disabled={usedUp}
+            style={{ position: "relative" }}
+          >
+            <span className="relative z-10">{num}</span>
+            {usedUp && (
+              <span className="
+              absolute 
+              left-1/4 right-1/4 
+              top-1/2 
+              border-t-2 
+              border-gray-900 
+              rotate-[-20deg] 
+              z-20 
+            " />
+            )}
+          </button>
+        );
+      })}
       <button
         type="button"
         class={`w-8 h-8 text-lg font-bold rounded ${

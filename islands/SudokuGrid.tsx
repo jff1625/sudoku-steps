@@ -1,7 +1,14 @@
 import { useState } from "preact/hooks";
-import { eraserEnabled, pencilEnabled, selectedNumber } from "../signals.ts";
+import {
+  cellCounts,
+  eraserEnabled,
+  hasIllegalCells,
+  pencilEnabled,
+  selectedNumber,
+} from "../signals.ts";
 import type {
   Board,
+  CellCounts,
   CellData,
   CellUpdateProps,
   CellValue,
@@ -55,13 +62,44 @@ function isCellLocked(
   return initialBoard[rowIdx][colIdx].value !== "";
 }
 
+function countCells(board: Board): CellCounts {
+  const counts: Record<number, number> = {
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+    6: 0,
+    7: 0,
+    8: 0,
+    9: 0,
+  };
+  for (const row of board) {
+    for (const cell of row) {
+      if (typeof cell.value === "number") {
+        counts[cell.value]++;
+      }
+    }
+  }
+  return counts;
+}
+
+function hasAnyIllegalCell(board: Board): boolean {
+  for (let row = 0; row < 9; row++) {
+    for (let col = 0; col < 9; col++) {
+      if (isCellIllegal(board, row, col)) return true;
+    }
+  }
+  return false;
+}
+
 export function SudokuGrid({
   initialBoard,
   gridRef,
 }: SudokuGridProps) {
   const [board, setBoard] = useState<Board>(initialBoard);
 
-  // console.log("Grid", selectedNumber);
+  console.log("SudokuGrid render");
 
   // Accepts an object with optional value and pencilmarks
   const handleCellChange = (
@@ -73,8 +111,8 @@ export function SudokuGrid({
       value,
       pencilmarks,
     } = props;
-    setBoard((prev) =>
-      prev.map((r, i) =>
+    setBoard((prev) => {
+      const newBoard = prev.map((r, i) =>
         r.map((cell, j) => {
           if (i !== row || j !== col) return cell;
           const updated = { ...cell };
@@ -84,8 +122,12 @@ export function SudokuGrid({
           }
           return updated;
         })
-      ) as Board
-    );
+      ) as Board;
+      // Update signals only when board changes
+      cellCounts.value = countCells(newBoard);
+      hasIllegalCells.value = hasAnyIllegalCell(newBoard);
+      return newBoard;
+    });
   };
 
   return (
