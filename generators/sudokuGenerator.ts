@@ -1,7 +1,7 @@
 import { BOARD_SIZE } from "../constants.ts";
 import type { Board, CellValue } from "../types/sudoku.ts";
 import { createEmptyBoard } from "./utils/createEmptyBoard.ts";
-import { randomFrom } from "./utils/randomFrom.ts";
+import { randomFrom } from "../utils/randomFrom.ts";
 
 function shuffle<T>(array: T[]): T[] {
   // Fisher-Yates shuffle

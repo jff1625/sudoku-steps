@@ -7,7 +7,7 @@ import { NumberPad } from "./NumberPad.tsx";
 import { SudokuGrid } from "./SudokuGrid.tsx";
 import { generateSudoku } from "../generators/sudokuGenerator.ts";
 import { generateScanPracticeBoard } from "../generators/scanPracticeGenerator.ts";
-import { randomFrom } from "../generators/utils/randomFrom.ts";
+import { randomFrom } from "../utils/randomFrom.ts";
 
 export const SudokuGame = (
   {

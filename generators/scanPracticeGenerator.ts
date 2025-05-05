@@ -1,6 +1,6 @@
 import { createEmptyBoard } from "./utils/createEmptyBoard.ts";
 import { transposeBoard } from "./utils/transposeBoard.ts";
-import { randomFrom } from "./utils/randomFrom.ts";
+import { randomFrom } from "../utils/randomFrom.ts";
 import type { Board, CellValue, ScanPracticeParams } from "../types/sudoku.ts";
 
 function generateScanPracticeBoardBase(params: ScanPracticeParams = {}): Board {
