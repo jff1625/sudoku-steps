@@ -53,7 +53,7 @@ export function Cell(props: CellProps) {
       }
     }
 
-    console.log("handleCellClickInternal ", selectedNumber, value, newValue);
+    // console.log("handleCellClickInternal ", selectedNumber, value, newValue);
     props.onCellChange(
       {
         row: rowIdx,

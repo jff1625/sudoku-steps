@@ -1,10 +1,12 @@
+import type { RefObject } from "preact";
+
 export interface SudokuGameProps {
   initialBoard?: Board;
 }
 
 export interface SudokuGridProps {
   initialBoard: Board;
-  gridRef: preact.RefObject<HTMLTableElement>;
+  gridRef: RefObject<HTMLTableElement>;
 }
 
 export type Board = Grid<CellData>;

@@ -65,7 +65,6 @@ export function generateSudoku(difficulty: number = 0.5): Board {
   // 0.5 = medium, 0.7 = hard, 0.3 = easy
   const board: Board = createEmptyBoard();
   fillBoard(board);
-  console.log(1, board);
 
   // Remove cells
   const cellsToRemove = Math.floor(BOARD_SIZE * BOARD_SIZE * difficulty);
@@ -78,6 +77,5 @@ export function generateSudoku(difficulty: number = 0.5): Board {
       removed++;
     }
   }
-  console.log(2, board);
   return board;
 }
