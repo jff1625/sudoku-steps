@@ -1,19 +1,15 @@
+import { eraserEnabled, pencilEnabled, selectedNumber } from "../signals.ts";
 import { useEffect, useRef } from "preact/hooks";
 import { CellValue } from "../types/sudoku.ts";
 
 type NumberPadProps = {
-  onSelect: (num: CellValue, pencil: boolean, eraser: boolean) => void;
-  selectedNumber: CellValue;
-  pencilEnabled: boolean;
-  eraserEnabled: boolean;
-  gridRef?: preact.RefObject<HTMLElement>;
+  gridRef: preact.RefObject<HTMLTableElement>;
 };
 
 export const NumberPad = (
-  { onSelect, selectedNumber, pencilEnabled, eraserEnabled, gridRef }:
-    NumberPadProps,
+  { gridRef }: NumberPadProps,
 ) => {
-  const numbers: CellValue[] = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+  const numbers: CellValue[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -24,77 +20,71 @@ export const NumberPad = (
         return;
       }
       // Deselect everything
-      if (selectedNumber !== null || pencilEnabled) {
-        onSelect("", false, false);
+      if (selectedNumber.value !== "" || pencilEnabled.value) {
+        selectedNumber.value = "";
+        pencilEnabled.value = false;
+        eraserEnabled.value = false;
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [selectedNumber, pencilEnabled, onSelect, gridRef]);
+  }, []);
 
   return (
     <div
       ref={containerRef}
-      style={{ display: "flex", gap: 8, margin: "16px 0" }}
+      class="flex gap-2 my-4"
     >
       <button
         type="button"
-        style={{
-          width: 32,
-          height: 32,
-          fontSize: 18,
-          fontWeight: "bold",
-          borderRadius: 4,
-          border: pencilEnabled ? "2px solid #3b82f6" : "1px solid #ccc",
-          background: pencilEnabled ? "#dbeafe" : "#fff",
-          color: "#222",
-          cursor: "pointer",
-        }}
+        class={`w-8 h-8 text-lg font-bold rounded ${
+          pencilEnabled.value
+            ? "border-2 border-blue-500 bg-blue-100"
+            : "border border-gray-300 bg-white"
+        } text-gray-900 cursor-pointer flex items-center justify-center`}
         title="Pencil"
-        onClick={() => onSelect(selectedNumber, !pencilEnabled, !eraserEnabled)}
+        aria-pressed={pencilEnabled.value}
+        onClick={() => {
+          pencilEnabled.value = !pencilEnabled.value;
+          eraserEnabled.value = false;
+        }}
       >
         ✏️
       </button>
       {numbers.map((num) => (
         <button
-          key={num}
+          key={num.toString()}
           type="button"
-          style={{
-            width: 32,
-            height: 32,
-            fontSize: 18,
-            fontWeight: "bold",
-            borderRadius: 4,
-            border: selectedNumber === num
-              ? "2px solid #22c55e"
-              : "1px solid #ccc",
-            background: selectedNumber === num ? "#bbf7d0" : "#fff",
-            color: "#222",
-            cursor: "pointer",
+          class={`w-8 h-8 text-lg font-bold rounded ${
+            selectedNumber.value === num
+              ? "border-2 border-green-500 bg-green-100"
+              : "border border-gray-300 bg-white"
+          } text-gray-900 cursor-pointer flex items-center justify-center`}
+          aria-pressed={selectedNumber.value === num}
+          onClick={() => {
+            selectedNumber.value = selectedNumber.value === num ? "" : num;
+            eraserEnabled.value = false;
           }}
-          onClick={() =>
-            onSelect(selectedNumber === num ? "" : num, pencilEnabled, false)}
         >
           {num}
         </button>
       ))}
       <button
         type="button"
-        style={{
-          width: 32,
-          height: 32,
-          fontSize: 18,
-          fontWeight: "bold",
-          borderRadius: 4,
-          border: eraserEnabled ? "2px solid #22c55e" : "1px solid #ccc",
-          background: eraserEnabled ? "#bbf7d0" : "#fff",
-          color: "#222",
-          cursor: "pointer",
-        }}
+        class={`w-8 h-8 text-lg font-bold rounded ${
+          eraserEnabled.value
+            ? "border-2 border-green-500 bg-green-100"
+            : "border border-gray-300 bg-white"
+        } text-gray-900 cursor-pointer flex items-center justify-center`}
         title="Eraser"
-        onClick={() => onSelect("", false, true)}
+        aria-pressed={eraserEnabled.value}
+        onClick={() => {
+          eraserEnabled.value = true;
+          pencilEnabled.value = false;
+          selectedNumber.value = "";
+        }}
       >
         🧹
       </button>

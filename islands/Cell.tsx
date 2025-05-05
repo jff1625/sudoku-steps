@@ -3,7 +3,7 @@ import { CellValue, PencilmarkValue } from "../types/sudoku.ts";
 
 type CellProps = {
   value: CellValue;
-  pencilmarks: Set<PencilmarkValue>;
+  pencilmarks: PencilmarkValue[];
   board: Board;
   rowIdx: number;
   colIdx: number;
@@ -16,7 +16,7 @@ type CellProps = {
   eraserEnabled: boolean;
 };
 
-export function CellComponent(props: CellProps) {
+export function Cell(props: CellProps) {
   const {
     rowIdx,
     colIdx,
@@ -29,7 +29,9 @@ export function CellComponent(props: CellProps) {
     pencilEnabled,
     eraserEnabled,
   } = props;
-  const hasPencilmarks = pencilmarks && pencilmarks.size > 0;
+  const hasPencilmarks = pencilmarks && pencilmarks.length > 0;
+
+  // console.log("Cell", rowIdx, colIdx, value, selectedNumber);
 
   function handleCellClickInternal() {
     if (locked) return;
@@ -37,17 +39,21 @@ export function CellComponent(props: CellProps) {
     let newPencilmarks = pencilmarks;
     if (eraserEnabled) {
       newValue = "";
-    }
-    if (
-      pencilEnabled && selectedNumber !== ""
+    } else if (
+      selectedNumber !== ""
     ) {
-      newPencilmarks = new Set(pencilmarks);
-      if (newPencilmarks.has(selectedNumber)) {
-        newPencilmarks.delete(selectedNumber);
+      if (pencilEnabled) {
+        if (pencilmarks.includes(selectedNumber)) {
+          newPencilmarks = pencilmarks.filter((n) => n !== selectedNumber);
+        } else {
+          newPencilmarks = [...pencilmarks, selectedNumber];
+        }
       } else {
-        newPencilmarks.add(selectedNumber);
+        newValue = selectedNumber;
       }
     }
+
+    console.log("handleCellClickInternal ", selectedNumber, value, newValue);
     props.onCellChange(
       {
         row: rowIdx,
@@ -104,7 +110,7 @@ export function CellComponent(props: CellProps) {
                   className="flex items-center justify-center"
                   style={{ minHeight: 0, minWidth: 0 }}
                 >
-                  {pencilmarks.has(n) ? n : ""}
+                  {pencilmarks.includes(n) ? n : ""}
                 </div>
               );
             })}
@@ -145,6 +151,3 @@ export function CellComponent(props: CellProps) {
     </td>
   );
 }
-
-// Rename export for usage elsewhere
-export { CellComponent as Cell };

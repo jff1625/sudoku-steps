@@ -1,4 +1,5 @@
 import { useState } from "preact/hooks";
+import { eraserEnabled, pencilEnabled, selectedNumber } from "../signals.ts";
 import type {
   Board,
   CellData,
@@ -41,6 +42,7 @@ const isCellHighlighted = (
   cellValue: CellValue,
   selectedNumber: CellValue,
 ): boolean => {
+  if (selectedNumber === "") return false;
   return cellValue === selectedNumber;
 };
 
@@ -55,11 +57,11 @@ function isCellLocked(
 
 export function SudokuGrid({
   initialBoard,
-  selectedNumber,
-  pencilEnabled,
-  eraserEnabled,
+  gridRef,
 }: SudokuGridProps) {
   const [board, setBoard] = useState<Board>(initialBoard);
+
+  // console.log("Grid", selectedNumber);
 
   // Accepts an object with optional value and pencilmarks
   const handleCellChange = (
@@ -78,7 +80,7 @@ export function SudokuGrid({
           const updated = { ...cell };
           if (value !== undefined) updated.value = value;
           if (props.pencilmarks !== undefined) {
-            updated.pencilmarks = new Set(pencilmarks);
+            updated.pencilmarks = pencilmarks;
           }
           return updated;
         })
@@ -87,25 +89,25 @@ export function SudokuGrid({
   };
 
   return (
-    <table className="border-collapse">
+    <table className="border-collapse" ref={gridRef}>
       <tbody>
         {board.map((row, rowIdx) => (
           <tr key={rowIdx}>
             {row.map((cell: CellData, colIdx) => (
               <Cell
-                key={`${colIdx}${rowIdx}`}
+                key={`${colIdx}-${rowIdx}`}
                 value={cell.value}
                 pencilmarks={cell.pencilmarks}
                 board={board}
                 rowIdx={rowIdx}
                 colIdx={colIdx}
                 illegal={isCellIllegal(board, rowIdx, colIdx)}
-                highlight={isCellHighlighted(cell.value, selectedNumber)}
+                highlight={isCellHighlighted(cell.value, selectedNumber.value)}
                 locked={isCellLocked(rowIdx, colIdx, initialBoard)}
                 onCellChange={handleCellChange}
-                selectedNumber={selectedNumber}
-                pencilEnabled={pencilEnabled}
-                eraserEnabled={eraserEnabled}
+                selectedNumber={selectedNumber.value}
+                pencilEnabled={pencilEnabled.value}
+                eraserEnabled={eraserEnabled.value}
               />
             ))}
           </tr>

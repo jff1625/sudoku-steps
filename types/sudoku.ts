@@ -1,13 +1,11 @@
-export interface SudokuBoardProps {
+export interface SudokuGameProps {
   initialBoard?: Board;
 }
 
-export type SudokuGridProps = {
+export interface SudokuGridProps {
   initialBoard: Board;
-  selectedNumber: CellValue;
-  pencilEnabled: boolean;
-  eraserEnabled: boolean;
-};
+  gridRef: preact.RefObject<HTMLTableElement>;
+}
 
 export type Board = Grid<CellData>;
 
@@ -27,16 +25,14 @@ export type Row<T> = [T, T, T, T, T, T, T, T, T];
 
 export type CellData = {
   value: CellValue;
-  pencilmarks: Set<PencilmarkValue>;
+  pencilmarks: PencilmarkValue[];
 };
 
 export type CellValue = "" | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
 export type PencilmarkValue = Exclude<CellValue, "">;
 
-export interface CellUpdateProps {
+export interface CellUpdateProps extends CellData {
   row: number;
   col: number;
-  value: CellValue;
-  pencilmarks?: Set<PencilmarkValue>;
 }

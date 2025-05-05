@@ -1,11 +1,15 @@
 import { BOARD_SIZE } from "../constants.ts";
-import type { Board, CellValue } from "../types/sudoku.ts";
+import type { Board, CellData, CellValue } from "../types/sudoku.ts";
 
 export function createEmptyBoard(): Board {
   return Array.from(
     { length: BOARD_SIZE },
-    () => Array.from({ length: BOARD_SIZE }, () => ""),
-  ) as unknown as Board;
+    () =>
+      Array.from({ length: BOARD_SIZE }, () => ({
+        value: "",
+        pencilmarks: [],
+      } as CellData)),
+  ) as Board;
 }
 
 function shuffle<T>(array: T[]): T[] {
@@ -61,6 +65,7 @@ export function generateSudoku(difficulty: number = 0.5): Board {
   // 0.5 = medium, 0.7 = hard, 0.3 = easy
   const board: Board = createEmptyBoard();
   fillBoard(board);
+  console.log(1, board);
 
   // Remove cells
   const cellsToRemove = Math.floor(BOARD_SIZE * BOARD_SIZE * difficulty);
@@ -69,9 +74,10 @@ export function generateSudoku(difficulty: number = 0.5): Board {
     const row = Math.floor(Math.random() * BOARD_SIZE);
     const col = Math.floor(Math.random() * BOARD_SIZE);
     if (board[row][col].value !== "") {
-      board[row][col] = { value: "", pencilmarks: new Set() };
+      board[row][col] = { value: "", pencilmarks: [] };
       removed++;
     }
   }
+  console.log(2, board);
   return board;
 }
