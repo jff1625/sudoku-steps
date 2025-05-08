@@ -8,6 +8,8 @@ import { SudokuGrid } from "./SudokuGrid.tsx";
 import { generateSudoku } from "../generators/sudokuGenerator.ts";
 import { generateBandBoard } from "../generators/bandGenerator.ts";
 import { generateBand2dBoard } from "../generators/band2dGenerator.ts";
+import { generateSingleCandidateBoard } from "../generators/singleCandidateGenerator.ts";
+
 import { randomFrom } from "../utils/randomFrom.ts";
 
 export const SudokuGame = (
@@ -35,6 +37,16 @@ export const SudokuGame = (
         const targetValue = randomFrom(1, 9) as SudokuNumbers;
         return {
           board: generateBand2dBoard({ x, y, targetValue }),
+          targetCell: { x, y },
+          winCondition: () => targetCellValue.value === targetValue,
+        };
+      })
+      .with("single-candidate", () => {
+        const x = randomFrom(0, 8);
+        const y = randomFrom(0, 8);
+        const targetValue = randomFrom(1, 9) as SudokuNumbers;
+        return {
+          board: generateSingleCandidateBoard({ x, y, targetValue }),
           targetCell: { x, y },
           winCondition: () => targetCellValue.value === targetValue,
         };

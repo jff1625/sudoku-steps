@@ -3,7 +3,7 @@ import { SudokuGame } from "../islands/SudokuGame.tsx";
 import type { GameMode } from "../types/sudoku.ts";
 
 export default function Home() {
-  const gameMode: GameMode = "band-2d";
+  const gameMode: GameMode = "single-candidate";
 
   return (
     <div class="px-4 py-8 mx-auto bg-[#86efac]">

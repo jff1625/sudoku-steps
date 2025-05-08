@@ -57,6 +57,6 @@ export interface BandParams {
 export type GameMode =
   | "normal"
   | "band"
-  | "band-2d";
-// | "single-candidate"
+  | "band-2d"
+  | "single-candidate";
 // | "row";
