@@ -1,9 +1,9 @@
 import { createEmptyBoard } from "./utils/createEmptyBoard.ts";
 import { transposeBoard } from "./utils/transposeBoard.ts";
 import { randomFrom } from "../utils/randomFrom.ts";
-import type { Board, CellValue, ScanPracticeParams } from "../types/sudoku.ts";
+import type { BandParams, Board, CellValue } from "../types/sudoku.ts";
 
-function generateScanPracticeBoardBase(params: ScanPracticeParams = {}): Board {
+function generateBandBoardBase(params: BandParams = {}): Board {
   const board: Board = createEmptyBoard();
   const x = params.x ?? randomFrom(0, 8);
   const y = params.y ?? randomFrom(0, 8);
@@ -48,10 +48,10 @@ function generateScanPracticeBoardBase(params: ScanPracticeParams = {}): Board {
   return board;
 }
 
-export function generateScanPracticeBoard(
-  params: ScanPracticeParams = {},
+export function generateBandBoard(
+  params: BandParams = {},
 ): Board {
-  const base = generateScanPracticeBoardBase(params);
+  const base = generateBandBoardBase(params);
   if (params.scanDirection === "vertical") {
     return transposeBoard(base);
   }

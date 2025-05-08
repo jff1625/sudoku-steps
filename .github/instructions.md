@@ -1,0 +1,3 @@
+- no glaze-gpt
+- include entire codebase as context with every chat message
+- Use type imports for TypeScript types

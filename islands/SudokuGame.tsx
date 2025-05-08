@@ -6,7 +6,8 @@ import type { SudokuGameProps, SudokuNumbers } from "../types/sudoku.ts";
 import { NumberPad } from "./NumberPad.tsx";
 import { SudokuGrid } from "./SudokuGrid.tsx";
 import { generateSudoku } from "../generators/sudokuGenerator.ts";
-import { generateScanPracticeBoard } from "../generators/scanPracticeGenerator.ts";
+import { generateBandBoard } from "../generators/bandGenerator.ts";
+import { generateBand2dBoard } from "../generators/band2dGenerator.ts";
 import { randomFrom } from "../utils/randomFrom.ts";
 
 export const SudokuGame = (
@@ -23,7 +24,17 @@ export const SudokuGame = (
         const y = randomFrom(0, 8);
         const targetValue = randomFrom(1, 9) as SudokuNumbers;
         return {
-          board: generateScanPracticeBoard({ x, y, targetValue }),
+          board: generateBandBoard({ x, y, targetValue }),
+          targetCell: { x, y },
+          winCondition: () => targetCellValue.value === targetValue,
+        };
+      })
+      .with("band-2d", () => {
+        const x = randomFrom(0, 8);
+        const y = randomFrom(0, 8);
+        const targetValue = randomFrom(1, 9) as SudokuNumbers;
+        return {
+          board: generateBand2dBoard({ x, y, targetValue }),
           targetCell: { x, y },
           winCondition: () => targetCellValue.value === targetValue,
         };

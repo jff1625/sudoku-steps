@@ -3,7 +3,7 @@ import { assertEquals } from "https://deno.land/std@0.224.0/assert/assert_equals
 import { createEmptyBoard } from "./createEmptyBoard.ts";
 import { BOARD_SIZE } from "../../constants.ts";
 import type { CellValue } from "../../types/sudoku.ts";
-import { randomFrom } from "./randomFrom.ts";
+import { randomFrom } from "../../utils/randomFrom.ts";
 
 Deno.test("createEmptyBoard returns a 9x9 board of empty cells", () => {
   const board = createEmptyBoard();

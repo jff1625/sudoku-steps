@@ -1,9 +1,9 @@
 import { SudokuGame } from "../islands/SudokuGame.tsx";
 
-import { GameMode } from "../types/sudoku.ts";
+import type { GameMode } from "../types/sudoku.ts";
 
 export default function Home() {
-  const gameMode: GameMode = "band";
+  const gameMode: GameMode = "band-2d";
 
   return (
     <div class="px-4 py-8 mx-auto bg-[#86efac]">

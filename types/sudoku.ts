@@ -46,7 +46,7 @@ export interface CellCoords {
 
 export type CellCounts = Record<number, number>;
 
-export interface ScanPracticeParams {
+export interface BandParams {
   x?: number;
   y?: number;
   targetValue?: CellValue;
@@ -56,7 +56,7 @@ export interface ScanPracticeParams {
 
 export type GameMode =
   | "normal"
-  | "band";
-// | "band-2d"
+  | "band"
+  | "band-2d";
 // | "single-candidate"
 // | "row";

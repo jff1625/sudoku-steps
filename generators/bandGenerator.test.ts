@@ -1,27 +1,27 @@
 import { assert } from "https://deno.land/std@0.224.0/assert/assert.ts";
 import { assertEquals } from "https://deno.land/std@0.224.0/assert/assert_equals.ts";
-import { generateScanPracticeBoard } from "./scanPracticeGenerator.ts";
+import { generateBandBoard } from "./bandGenerator.ts";
 import { BOARD_SIZE } from "../constants.ts";
-import type { ScanPracticeParams } from "../types/sudoku.ts";
+import type { BandParams } from "../types/sudoku.ts";
 
-Deno.test("generateScanPracticeBoard returns a 9x9 board (random)", () => {
-  const board = generateScanPracticeBoard();
+Deno.test("generateBandBoard returns a 9x9 board (random)", () => {
+  const board = generateBandBoard();
   assertEquals(board.length, BOARD_SIZE);
   for (const row of board) {
     assertEquals(row.length, BOARD_SIZE);
   }
 });
 
-Deno.test("generateScanPracticeBoard returns the expected 9x9 board (deterministic)", () => {
-  type RequiredScanPracticeParams = Required<ScanPracticeParams>;
-  const params: RequiredScanPracticeParams = {
+Deno.test("generateBandBoard returns the expected 9x9 board (deterministic)", () => {
+  type RequiredBandParams = Required<BandParams>;
+  const params: RequiredBandParams = {
     x: 1,
     y: 2,
     targetValue: 5,
     order: "increasing",
     scanDirection: "horizontal",
   };
-  const board = generateScanPracticeBoard(params);
+  const board = generateBandBoard(params);
   assertEquals(board.length, BOARD_SIZE);
   for (const row of board) {
     assertEquals(row.length, BOARD_SIZE);
