@@ -3,6 +3,7 @@ import { createEmptyBoard } from "./createEmptyBoard.ts";
 import { BOARD_SIZE } from "../../constants.ts";
 import type { CellValue } from "../../types/sudoku.ts";
 import { randomFrom } from "../../utils/randomFrom.ts";
+import { transposeBoard } from "./transposeBoard.ts";
 
 describe("createEmptyBoard", () => {
   it("returns a 9x9 board of empty cells", () => {
@@ -20,7 +21,7 @@ describe("createEmptyBoard", () => {
 });
 
 describe("transposeBoard", () => {
-  it("correctly transposes a 9x9 board", async () => {
+  it("correctly transposes a 9x9 board", () => {
     const board = createEmptyBoard();
     // Fill board[x][y] = ((x * BOARD_SIZE + y) % 9) + 1 as CellValue
     for (let x = 0; x < BOARD_SIZE; x++) {
@@ -28,7 +29,6 @@ describe("transposeBoard", () => {
         board[x][y].value = (((x * BOARD_SIZE + y) % 9) + 1) as CellValue;
       }
     }
-    const { transposeBoard } = await import("./transposeBoard.ts");
     const transposed = transposeBoard(board);
     for (let x = 0; x < BOARD_SIZE; x++) {
       for (let y = 0; y < BOARD_SIZE; y++) {

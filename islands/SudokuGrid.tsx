@@ -1,12 +1,4 @@
 import { useState } from "preact/hooks";
-import {
-  cellCounts,
-  eraserEnabled,
-  hasIllegalCells,
-  pencilEnabled,
-  selectedNumber,
-  targetCellValue,
-} from "../signals.ts";
 import type {
   Board,
   CellCounts,
@@ -14,6 +6,14 @@ import type {
   CellValue,
   SudokuGridProps,
 } from "../types/sudoku.ts";
+import {
+  cellCounts,
+  eraserEnabled,
+  hasIllegalCells,
+  highlightNumber,
+  pencilEnabled,
+  targetCellValue,
+} from "../signals.ts";
 import { Cell } from "./Cell.tsx";
 
 const isCellIllegal = (
@@ -47,10 +47,12 @@ const isCellIllegal = (
 
 const isCellHighlighted = (
   cellValue: CellValue,
-  selectedNumber: CellValue,
+  _x: number,
+  _y: number,
 ): boolean => {
-  if (selectedNumber === "") return false;
-  return cellValue === selectedNumber;
+  // Use highlightNumber for board highlight
+  if (highlightNumber.value === "") return false;
+  return cellValue === highlightNumber.value;
 };
 
 function isCellLocked(
@@ -149,13 +151,9 @@ export function SudokuGrid({
                 x={x}
                 y={y}
                 illegal={isCellIllegal(board, x, y)}
-                highlight={isCellHighlighted(
-                  board[x][y].value,
-                  selectedNumber.value,
-                )}
+                highlight={isCellHighlighted(board[x][y].value, x, y)}
                 locked={isCellLocked(x, y, initialBoard)}
                 onCellChange={handleCellChange}
-                selectedNumber={selectedNumber.value}
                 pencilEnabled={pencilEnabled.value}
                 eraserEnabled={eraserEnabled.value}
               />

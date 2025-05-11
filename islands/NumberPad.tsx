@@ -1,8 +1,9 @@
 import {
   cellCounts,
   eraserEnabled,
+  highlightNumber,
+  padSelectedNumber,
   pencilEnabled,
-  selectedNumber,
 } from "../signals.ts";
 import { useEffect, useRef } from "preact/hooks";
 import type { SudokuNumbers } from "../types/sudoku.ts";
@@ -25,17 +26,52 @@ export const NumberPad = (
         return;
       }
       // Deselect everything
-      if (selectedNumber.value !== "" || pencilEnabled.value) {
-        selectedNumber.value = "";
+      if (padSelectedNumber.value !== "" || pencilEnabled.value) {
+        padSelectedNumber.value = "";
         pencilEnabled.value = false;
         eraserEnabled.value = false;
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
+    1;
+    function handlePadKeyboard(e: KeyboardEvent) {
+      // Only handle if no cell is focused for text entry
+      const active = document.activeElement;
+      // If a cell or input is focused, do not trigger pad logic
+      if (
+        active &&
+        (active.tagName === "INPUT" ||
+          (gridRef.current && gridRef.current.contains(active)))
+      ) {
+        return;
+      }
+      // Number keys 1-9
+      if (/^[1-9]$/.test(e.key)) {
+        const num = parseInt(e.key, 10) as SudokuNumbers;
+        padSelectedNumber.value = padSelectedNumber.value === num ? "" : num;
+        highlightNumber.value = padSelectedNumber.value;
+        eraserEnabled.value = false;
+      }
+      // Backspace or Delete for eraser
+      if (e.key === "Backspace" || e.key === "Delete") {
+        eraserEnabled.value = !eraserEnabled.value;
+        pencilEnabled.value = false;
+        padSelectedNumber.value = "";
+        e.preventDefault();
+      }
+      // 'p' for pencil toggle
+      if (e.key === "p" || e.key === "P") {
+        pencilEnabled.value = !pencilEnabled.value;
+        eraserEnabled.value = false;
+        e.preventDefault();
+      }
+    }
+    globalThis.addEventListener("keydown", handlePadKeyboard);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      globalThis.removeEventListener("keydown", handlePadKeyboard);
     };
-  }, []);
+  }, [gridRef]);
 
   return (
     <div
@@ -65,13 +101,16 @@ export const NumberPad = (
             key={num.toString()}
             type="button"
             class={`w-8 h-8 text-lg font-bold rounded relative mx-1 my-1 ${
-              selectedNumber.value === num
+              padSelectedNumber.value === num
                 ? "border-2 border-green-500 bg-green-100"
                 : "border border-gray-300 bg-white"
             } text-gray-900 cursor-pointer flex items-center justify-center`}
-            aria-pressed={selectedNumber.value === num}
+            aria-pressed={padSelectedNumber.value === num}
             onClick={() => {
-              selectedNumber.value = selectedNumber.value === num ? "" : num;
+              padSelectedNumber.value = padSelectedNumber.value === num
+                ? ""
+                : num;
+              highlightNumber.value = padSelectedNumber.value;
               eraserEnabled.value = false;
             }}
             // disabled={usedUp}
@@ -104,7 +143,7 @@ export const NumberPad = (
         onClick={() => {
           eraserEnabled.value = true;
           pencilEnabled.value = false;
-          selectedNumber.value = "";
+          padSelectedNumber.value = "";
         }}
       >
         🧹

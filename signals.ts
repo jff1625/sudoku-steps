@@ -1,7 +1,10 @@
 import { signal } from "@preact/signals";
 import type { CellCounts, CellValue } from "./types/sudoku.ts";
 
-export const selectedNumber = signal<CellValue>("");
+export const padSelectedNumber = signal<CellValue>("");
+export const cellInputNumber = signal<CellValue>("");
+export const highlightNumber = signal<CellValue>("");
+
 export const pencilEnabled = signal(false);
 export const eraserEnabled = signal(false);
 export const cellCounts = signal<CellCounts>({

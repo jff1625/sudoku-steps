@@ -1,3 +1,6 @@
-- no glaze-gpt
-- include entire codebase as context with every chat message
+- No glaze-gpt. We expect advice from a competent engineer, not a sycophant.
+- Include entire codebase as context with every chat message
 - Use type imports for TypeScript types
+- No dynamic import or require unless specifically requested or needed.
+- Follow deno fmt and deno lint rules
+- Use const fat arrow for function definitions, to forestall mutation
