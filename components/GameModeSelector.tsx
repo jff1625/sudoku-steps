@@ -6,12 +6,14 @@ const GAME_MODE_LIST = Object.entries(GAME_MODE_DETAILS) as [
   { name: string; description: string; example?: string },
 ][];
 
-export function GameModeSelector(
-  { onSelect, onInfo }: {
-    onSelect: (mode: GameMode) => void;
-    onInfo: (mode: GameMode) => void;
-  },
-) {
+type GameModeSelectorProps = {
+  onSelect: (mode: GameMode) => void;
+  onInfo: (mode: GameMode) => void;
+};
+
+export const GameModeSelector = (
+  { onSelect, onInfo }: GameModeSelectorProps,
+) => {
   return (
     <div class="w-full grid grid-cols-1 sm:grid-cols-2 gap-4 my-6">
       {GAME_MODE_LIST.map(([key, mode]) => (
@@ -57,4 +59,4 @@ export function GameModeSelector(
       ))}
     </div>
   );
-}
+};

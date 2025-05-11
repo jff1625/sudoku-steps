@@ -1,4 +1,4 @@
-export function Header() {
+export const Header = () => {
   return (
     <header class="w-full bg-green-600 text-white py-4 shadow-md">
       <div class="max-w-screen-md mx-auto flex items-center justify-between px-4">
@@ -14,4 +14,4 @@ export function Header() {
       </div>
     </header>
   );
-}
+};

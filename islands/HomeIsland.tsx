@@ -3,7 +3,7 @@ import { GAME_MODE_DETAILS, GAME_MODES } from "../constants.ts";
 import { SudokuGame } from "./SudokuGame.tsx";
 import type { GameMode } from "../types/sudoku.ts";
 
-export default function HomeIsland() {
+export const HomeIsland = () => {
   const [selectedMode, setSelectedMode] = useState<GameMode>("normal");
   const [resetKey, setResetKey] = useState(0);
   const [showLiveGame, setShowLiveGame] = useState(true); // true on initial load
@@ -87,4 +87,6 @@ export default function HomeIsland() {
       </div>
     </div>
   );
-}
+};
+
+export default HomeIsland;

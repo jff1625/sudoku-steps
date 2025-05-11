@@ -24,7 +24,7 @@ type CellProps = {
   eraserEnabled: boolean;
 };
 
-export function Cell(props: CellProps) {
+export const Cell = (props: CellProps) => {
   const {
     x,
     y,
@@ -38,8 +38,7 @@ export function Cell(props: CellProps) {
   } = props;
   const hasPencilmarks = pencilmarks && pencilmarks.length > 0;
 
-  // console.log("Cell", x, y, value, selectedNumber);
-
+  // Handle cell click event
   function handleCellClickInternal() {
     if (locked) return;
     let newValue = value;
@@ -178,4 +177,4 @@ export function Cell(props: CellProps) {
         )}
     </td>
   );
-}
+};

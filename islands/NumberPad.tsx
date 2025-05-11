@@ -12,9 +12,7 @@ type NumberPadProps = {
   gridRef: preact.RefObject<HTMLTableElement>;
 };
 
-export const NumberPad = (
-  { gridRef }: NumberPadProps,
-) => {
+export const NumberPad = ({ gridRef }: NumberPadProps) => {
   const numbers: SudokuNumbers[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -25,7 +23,6 @@ export const NumberPad = (
       if (gridRef && gridRef.current && gridRef.current.contains(target)) {
         return;
       }
-      // Deselect everything
       if (padSelectedNumber.value !== "" || pencilEnabled.value) {
         padSelectedNumber.value = "";
         pencilEnabled.value = false;
@@ -33,11 +30,8 @@ export const NumberPad = (
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
-    1;
     function handlePadKeyboard(e: KeyboardEvent) {
-      // Only handle if no cell is focused for text entry
       const active = document.activeElement;
-      // If a cell or input is focused, do not trigger pad logic
       if (
         active &&
         (active.tagName === "INPUT" ||
@@ -45,21 +39,18 @@ export const NumberPad = (
       ) {
         return;
       }
-      // Number keys 1-9
       if (/^[1-9]$/.test(e.key)) {
         const num = parseInt(e.key, 10) as SudokuNumbers;
         padSelectedNumber.value = padSelectedNumber.value === num ? "" : num;
         highlightNumber.value = padSelectedNumber.value;
         eraserEnabled.value = false;
       }
-      // Backspace or Delete for eraser
       if (e.key === "Backspace" || e.key === "Delete") {
         eraserEnabled.value = !eraserEnabled.value;
         pencilEnabled.value = false;
         padSelectedNumber.value = "";
         e.preventDefault();
       }
-      // 'p' for pencil toggle
       if (e.key === "p" || e.key === "P") {
         pencilEnabled.value = !pencilEnabled.value;
         eraserEnabled.value = false;
@@ -104,17 +95,20 @@ export const NumberPad = (
               padSelectedNumber.value === num
                 ? "border-2 border-green-500 bg-green-100"
                 : "border border-gray-300 bg-white"
-            } text-gray-900 cursor-pointer flex items-center justify-center`}
+            } text-gray-900 cursor-pointer flex items-center justify-center${
+              usedUp ? " opacity-50 cursor-not-allowed" : ""
+            }`}
             aria-pressed={padSelectedNumber.value === num}
+            aria-disabled={usedUp}
+            disabled={usedUp}
             onClick={() => {
+              if (usedUp) return;
               padSelectedNumber.value = padSelectedNumber.value === num
                 ? ""
                 : num;
               highlightNumber.value = padSelectedNumber.value;
               eraserEnabled.value = false;
             }}
-            // disabled={usedUp}
-            style={{ position: "relative" }}
           >
             <span className="relative z-10">{num}</span>
             {usedUp && (

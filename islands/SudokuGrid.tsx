@@ -16,6 +16,9 @@ import {
 } from "../signals.ts";
 import { Cell } from "./Cell.tsx";
 
+/**
+ * Returns true if the cell at (x, y) is illegal (duplicate in row, col, or box)
+ */
 const isCellIllegal = (
   board: Board,
   x: number,
@@ -23,48 +26,52 @@ const isCellIllegal = (
 ): boolean => {
   const cell = board[x][y];
   if (cell.value === "" || typeof cell.value !== "number") return false;
-
-  // Check row (y)
   for (let xx = 0; xx < 9; xx++) {
     if (xx !== x && board[xx][y].value === cell.value) return true;
   }
-  // Check column (x)
   for (let yy = 0; yy < 9; yy++) {
     if (yy !== y && board[x][yy].value === cell.value) return true;
   }
-  // Check box
   const boxY = Math.floor(y / 3) * 3;
   const boxX = Math.floor(x / 3) * 3;
   for (let yy = boxY; yy < boxY + 3; yy++) {
     for (let xx = boxX; xx < boxX + 3; xx++) {
-      if (
-        (yy !== y || xx !== x) && board[xx][yy].value === cell.value
-      ) return true;
+      if ((yy !== y || xx !== x) && board[xx][yy].value === cell.value) {
+        return true;
+      }
     }
   }
   return false;
 };
 
+/**
+ * Returns true if the cell should be highlighted (matches highlightNumber)
+ */
 const isCellHighlighted = (
   cellValue: CellValue,
   _x: number,
   _y: number,
 ): boolean => {
-  // Use highlightNumber for board highlight
   if (highlightNumber.value === "") return false;
   return cellValue === highlightNumber.value;
 };
 
-function isCellLocked(
+/**
+ * Returns true if the cell at (x, y) is locked (part of the initial puzzle)
+ */
+const isCellLocked = (
   x: number,
   y: number,
   initialBoard?: Board,
-): boolean {
+): boolean => {
   if (!initialBoard) return false;
   return initialBoard[x][y].value !== "";
-}
+};
 
-function countCells(board: Board): CellCounts {
+/**
+ * Counts the number of each digit in the board
+ */
+const countCells = (board: Board): CellCounts => {
   const counts: Record<number, number> = {
     1: 0,
     2: 0,
@@ -84,54 +91,41 @@ function countCells(board: Board): CellCounts {
     }
   }
   return counts;
-}
+};
 
-function hasAnyIllegalCell(board: Board): boolean {
+/**
+ * Returns true if any cell in the board is illegal
+ */
+const hasAnyIllegalCell = (board: Board): boolean => {
   for (let y = 0; y < 9; y++) {
     for (let x = 0; x < 9; x++) {
       if (isCellIllegal(board, x, y)) return true;
     }
   }
   return false;
-}
+};
 
-export function SudokuGrid({
-  initialBoard,
-  gridRef,
-  targetCell,
-}: SudokuGridProps) {
+export const SudokuGrid = (
+  { initialBoard, gridRef, targetCell }: SudokuGridProps,
+) => {
   const [board, setBoard] = useState<Board>(initialBoard);
 
-  console.log("SudokuGrid render");
-
-  // Accepts an object with optional value and pencilmarks
-  const handleCellChange = (
-    props: CellUpdateProps,
-  ) => {
-    const {
-      x,
-      y,
-      value,
-      pencilmarks,
-    } = props;
+  const handleCellChange = (props: CellUpdateProps) => {
+    const { x, y, value, pencilmarks } = props;
     setBoard((prev) => {
       const newBoard = prev.map((col, xx) =>
         col.map((cell, yy) => {
           if (xx !== x || yy !== y) return cell;
           const updated = { ...cell };
           if (value !== undefined) updated.value = value;
-          if (props.pencilmarks !== undefined) {
-            updated.pencilmarks = pencilmarks;
-          }
+          if (pencilmarks !== undefined) updated.pencilmarks = pencilmarks;
           return updated;
         })
       ) as Board;
-      // Update signals only when board changes
       cellCounts.value = countCells(newBoard);
       hasIllegalCells.value = hasAnyIllegalCell(newBoard);
       return newBoard;
     });
-
     if (targetCell && targetCell.x === x && targetCell.y === y) {
       targetCellValue.value = value;
     }
@@ -140,9 +134,9 @@ export function SudokuGrid({
   return (
     <table className="border-collapse" ref={gridRef}>
       <tbody>
-        {[...Array(9)].map((_, y) => (
+        {Array.from({ length: 9 }).map((_, y) => (
           <tr key={y}>
-            {[...Array(9)].map((_, x) => (
+            {Array.from({ length: 9 }).map((_, x) => (
               <Cell
                 key={`${x}-${y}`}
                 value={board[x][y].value}
@@ -163,4 +157,4 @@ export function SudokuGrid({
       </tbody>
     </table>
   );
-}
+};
