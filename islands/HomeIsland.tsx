@@ -1,4 +1,3 @@
-import { h } from "preact";
 import { useState } from "preact/hooks";
 import { GameModeSelector } from "../components/GameModeSelector.tsx";
 import { TechniqueModal } from "../components/TechniqueModal.tsx";

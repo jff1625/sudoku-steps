@@ -1,5 +1,3 @@
-import { h } from "preact";
-
 export function Header() {
   return (
     <header class="w-full bg-green-600 text-white py-4 shadow-md">

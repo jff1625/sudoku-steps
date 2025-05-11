@@ -1,4 +1,3 @@
-import { h } from "preact";
 import type { GameMode } from "../types/sudoku.ts";
 import { GAME_MODE_DETAILS } from "../constants.ts";
 
