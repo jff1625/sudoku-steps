@@ -1,5 +1,5 @@
 // Update the import path below to match the actual location of band.ts
-import { BAND_EXAMPLE } from "../constants/exampleBoards/band";
+import { BAND_EXAMPLE } from "../constants/exampleBoards/band.ts";
 import { SudokuExample } from "./SudokuExample.tsx";
 import { GameModeSelector } from "../components/GameModeSelector.tsx";
 import { useState } from "preact/hooks";
