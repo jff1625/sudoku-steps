@@ -59,4 +59,3 @@ export type GameMode =
   | "band"
   | "band-2d"
   | "single-candidate";
-// | "row";

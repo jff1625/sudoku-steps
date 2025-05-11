@@ -17,6 +17,7 @@ export const SudokuGame = (
     gameMode,
   }: SudokuGameProps,
 ) => {
+  console.log("SudokuGame render");
   const gridRef = useRef<HTMLTableElement>(null);
 
   const { board, targetCell, winCondition } = useMemo(() =>
@@ -66,12 +67,14 @@ export const SudokuGame = (
   }, [winCondition, cellCounts.value, hasIllegalCells.value]);
 
   return (
-    <div>
-      <SudokuGrid
-        initialBoard={board}
-        gridRef={gridRef}
-        targetCell={targetCell}
-      />
+    <div class="w-full flex flex-col items-center">
+      <div class="flex justify-center w-full">
+        <SudokuGrid
+          initialBoard={board}
+          gridRef={gridRef}
+          targetCell={targetCell}
+        />
+      </div>
       <NumberPad
         gridRef={gridRef}
       />
