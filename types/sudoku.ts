@@ -58,4 +58,10 @@ export type GameMode =
   | "normal"
   | "band"
   | "band-2d"
-  | "single-candidate";
+  | "single-candidate"
+  | "mock-1"
+  | "mock-2"
+  | "mock-3"
+  | "mock-4"
+  | "mock-5"
+  | "mock-6";

@@ -2,7 +2,11 @@ import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { cellCounts, hasIllegalCells, targetCellValue } from "../signals.ts";
 import { match } from "ts-pattern";
 
-import type { SudokuGameProps, SudokuNumbers } from "../types/sudoku.ts";
+import type {
+  GameMode,
+  SudokuGameProps,
+  SudokuNumbers,
+} from "../types/sudoku.ts";
 import { NumberPad } from "./NumberPad.tsx";
 import { SudokuGrid } from "./SudokuGrid.tsx";
 import { generateSudoku } from "../generators/sudokuGenerator.ts";
@@ -66,6 +70,22 @@ export const SudokuGame = (
     setIsWin(winCondition());
   }, [winCondition, cellCounts.value, hasIllegalCells.value]);
 
+  // Instructional text for each mode
+  const instructions: Record<GameMode, string> = {
+    normal:
+      "Fill every row, column, and 3x3 box with the numbers 1–9. No repeats!",
+    band: "Identify the target cell and place the correct number to win.",
+    "band-2d": "Identify the target cell and place the correct number to win.",
+    "single-candidate":
+      "Identify the target cell and place the correct number to win.",
+    "mock-1": "Identify the target cell and place the correct number to win.",
+    "mock-2": "Identify the target cell and place the correct number to win.",
+    "mock-3": "Identify the target cell and place the correct number to win.",
+    "mock-4": "Identify the target cell and place the correct number to win.",
+    "mock-5": "Identify the target cell and place the correct number to win.",
+    "mock-6": "Identify the target cell and place the correct number to win.",
+  };
+
   return (
     <div class="w-full flex flex-col items-center">
       <div class="flex justify-center w-full">
@@ -75,14 +95,24 @@ export const SudokuGame = (
           targetCell={targetCell}
         />
       </div>
-      <NumberPad
-        gridRef={gridRef}
-      />
-      {isWin && (
-        <div class="mt-4 p-2 bg-green-200 text-green-900 rounded font-bold text-center">
-          🎉 Congratulations! You solved the puzzle!
-        </div>
-      )}
+      {/* Responsive NumberPad container: wrap and center on narrow screens */}
+      <div class="w-full flex flex-wrap justify-center items-center">
+        <NumberPad gridRef={gridRef} />
+      </div>
+      {/* Instruction or win message */}
+      <div class="mt-2 w-full flex justify-center">
+        {isWin
+          ? (
+            <div class="p-2 bg-green-200 text-green-900 rounded font-bold text-center">
+              🎉 Congratulations! You solved the puzzle!
+            </div>
+          )
+          : (
+            <div class="px-2 py-1 bg-green-50 text-green-900 rounded text-xs text-center">
+              {instructions[gameMode]}
+            </div>
+          )}
+      </div>
     </div>
   );
 };

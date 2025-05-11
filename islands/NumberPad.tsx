@@ -40,11 +40,11 @@ export const NumberPad = (
   return (
     <div
       ref={containerRef}
-      class="flex gap-2 my-4"
+      class="flex flex-wrap sm:flex-nowrap justify-center items-center mx-auto gap-y-2 mt-4 mb-2"
     >
       <button
         type="button"
-        class={`w-8 h-8 text-lg font-bold rounded ${
+        class={`w-8 h-8 text-lg font-bold rounded mx-1 my-1 ${
           pencilEnabled.value
             ? "border-2 border-blue-500 bg-blue-100"
             : "border border-gray-300 bg-white"
@@ -64,7 +64,7 @@ export const NumberPad = (
           <button
             key={num.toString()}
             type="button"
-            class={`w-8 h-8 text-lg font-bold rounded relative ${
+            class={`w-8 h-8 text-lg font-bold rounded relative mx-1 my-1 ${
               selectedNumber.value === num
                 ? "border-2 border-green-500 bg-green-100"
                 : "border border-gray-300 bg-white"
@@ -94,7 +94,7 @@ export const NumberPad = (
       })}
       <button
         type="button"
-        class={`w-8 h-8 text-lg font-bold rounded ${
+        class={`w-8 h-8 text-lg font-bold rounded mx-1 my-1 ${
           eraserEnabled.value
             ? "border-2 border-green-500 bg-green-100"
             : "border border-gray-300 bg-white"
