@@ -1,4 +1,4 @@
-import { BOARD_SIZE } from "../constants.ts";
+import { BOARD_SIZE } from "../constants/constants.ts";
 import type { Board, CellValue } from "../types/sudoku.ts";
 import { createEmptyBoard } from "./utils/createEmptyBoard.ts";
 import { randomFrom } from "../utils/randomFrom.ts";

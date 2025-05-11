@@ -1,4 +1,4 @@
-import { BOARD_SIZE } from "../../constants.ts";
+import { BOARD_SIZE } from "../../constants/constants.ts";
 import type { Board, CellData } from "../../types/sudoku.ts";
 
 export function createEmptyBoard(): Board {

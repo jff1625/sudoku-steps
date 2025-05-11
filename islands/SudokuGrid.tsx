@@ -4,6 +4,7 @@ import type {
   CellCounts,
   CellUpdateProps,
   CellValue,
+  ExampleOverlay,
   SudokuGridProps,
 } from "../types/sudoku.ts";
 import {
@@ -106,7 +107,9 @@ const hasAnyIllegalCell = (board: Board): boolean => {
 };
 
 export const SudokuGrid = (
-  { initialBoard, gridRef, targetCell }: SudokuGridProps,
+  { initialBoard, gridRef, targetCell }: SudokuGridProps & {
+    overlays?: ExampleOverlay[];
+  },
 ) => {
   const [board, setBoard] = useState<Board>(initialBoard);
 
@@ -132,29 +135,31 @@ export const SudokuGrid = (
   };
 
   return (
-    <table className="border-collapse" ref={gridRef}>
-      <tbody>
-        {Array.from({ length: 9 }).map((_, y) => (
-          <tr key={y}>
-            {Array.from({ length: 9 }).map((_, x) => (
-              <Cell
-                key={`${x}-${y}`}
-                value={board[x][y].value}
-                pencilmarks={board[x][y].pencilmarks}
-                board={board}
-                x={x}
-                y={y}
-                illegal={isCellIllegal(board, x, y)}
-                highlight={isCellHighlighted(board[x][y].value, x, y)}
-                locked={isCellLocked(x, y, initialBoard)}
-                onCellChange={handleCellChange}
-                pencilEnabled={pencilEnabled.value}
-                eraserEnabled={eraserEnabled.value}
-              />
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div class="relative w-fit h-fit">
+      <table className="border-collapse relative z-0" ref={gridRef}>
+        <tbody>
+          {Array.from({ length: 9 }).map((_, y) => (
+            <tr key={y}>
+              {Array.from({ length: 9 }).map((_, x) => (
+                <Cell
+                  key={`${x}-${y}`}
+                  value={board[x][y].value}
+                  pencilmarks={board[x][y].pencilmarks}
+                  board={board}
+                  x={x}
+                  y={y}
+                  illegal={isCellIllegal(board, x, y)}
+                  highlight={isCellHighlighted(board[x][y].value, x, y)}
+                  locked={isCellLocked(x, y, initialBoard)}
+                  onCellChange={handleCellChange}
+                  pencilEnabled={pencilEnabled.value}
+                  eraserEnabled={eraserEnabled.value}
+                />
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 };

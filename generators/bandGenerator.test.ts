@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { generateBandBoard } from "./bandGenerator.ts";
-import { BOARD_SIZE } from "../constants.ts";
+import { BOARD_SIZE } from "../constants/constants.ts";
 import type { BandParams } from "../types/sudoku.ts";
 
 describe("generateBandBoard", () => {

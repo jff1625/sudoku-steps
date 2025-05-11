@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { generateSudoku } from "./sudokuGenerator.ts";
-import { BOARD_SIZE } from "../constants.ts";
+import { BOARD_SIZE } from "../constants/constants.ts";
 
 describe("generateSudoku", () => {
   it("returns a board with correct number of empty cells (medium)", () => {

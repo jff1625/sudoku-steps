@@ -2,7 +2,7 @@ import type {
   Board,
   CellUpdateProps,
   CellValue,
-  PencilmarkValue,
+  SudokuNumbers,
 } from "../types/sudoku.ts";
 import {
   cellInputNumber,
@@ -12,7 +12,7 @@ import {
 
 type CellProps = {
   value: CellValue;
-  pencilmarks: PencilmarkValue[];
+  pencilmarks: SudokuNumbers[];
   board: Board;
   x: number;
   y: number;
@@ -103,7 +103,7 @@ export const Cell = (props: CellProps) => {
             }}
           >
             {Array.from({ length: 9 }, (_, i) => {
-              const n = (i + 1) as PencilmarkValue;
+              const n = (i + 1) as SudokuNumbers;
               return (
                 <div
                   key={n}

@@ -2,11 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { cellCounts, hasIllegalCells, targetCellValue } from "../signals.ts";
 import { match } from "ts-pattern";
 
-import type {
-  GameMode,
-  SudokuGameProps,
-  SudokuNumbers,
-} from "../types/sudoku.ts";
+import type { SudokuGameProps, SudokuNumbers } from "../types/sudoku.ts";
+import { GAME_MODE_DETAILS } from "../constants/constants.ts";
 import { NumberPad } from "./NumberPad.tsx";
 import { SudokuGrid } from "./SudokuGrid.tsx";
 import { generateSudoku } from "../generators/sudokuGenerator.ts";
@@ -70,22 +67,6 @@ export const SudokuGame = (
     setIsWin(winCondition());
   }, [winCondition, cellCounts.value, hasIllegalCells.value]);
 
-  // Instructional text for each mode
-  const instructions: Record<GameMode, string> = {
-    normal:
-      "Fill every row, column, and 3x3 box with the numbers 1–9. No repeats!",
-    band: "Identify the target cell and place the correct number to win.",
-    "band-2d": "Identify the target cell and place the correct number to win.",
-    "single-candidate":
-      "Identify the target cell and place the correct number to win.",
-    "mock-1": "Identify the target cell and place the correct number to win.",
-    "mock-2": "Identify the target cell and place the correct number to win.",
-    "mock-3": "Identify the target cell and place the correct number to win.",
-    "mock-4": "Identify the target cell and place the correct number to win.",
-    "mock-5": "Identify the target cell and place the correct number to win.",
-    "mock-6": "Identify the target cell and place the correct number to win.",
-  };
-
   return (
     <div class="w-full flex flex-col items-center">
       <div class="flex justify-center w-full">
@@ -109,7 +90,7 @@ export const SudokuGame = (
           )
           : (
             <div class="px-2 py-1 bg-green-50 text-green-900 rounded text-xs text-center">
-              {instructions[gameMode]}
+              {GAME_MODE_DETAILS[gameMode].instructions}
             </div>
           )}
       </div>

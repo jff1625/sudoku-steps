@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createEmptyBoard } from "./createEmptyBoard.ts";
-import { BOARD_SIZE } from "../../constants.ts";
+import { BOARD_SIZE } from "../../constants/constants.ts";
 import type { CellValue } from "../../types/sudoku.ts";
 import { randomFrom } from "../../utils/randomFrom.ts";
 import { transposeBoard } from "./transposeBoard.ts";
