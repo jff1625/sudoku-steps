@@ -3,7 +3,7 @@ import { transposeBoard } from "./utils/transposeBoard.ts";
 import { randomFrom } from "../utils/randomFrom.ts";
 import type { BandParams, Board, CellValue } from "../types/sudoku.ts";
 
-function generateBandBoardBase(params: BandParams = {}): Board {
+const generateBandBoardBase = (params: BandParams = {}): Board => {
   const board: Board = createEmptyBoard();
   const x = params.x ?? randomFrom(0, 8);
   const y = params.y ?? randomFrom(0, 8);
@@ -46,14 +46,19 @@ function generateBandBoardBase(params: BandParams = {}): Board {
     board[chosenCol][i === 0 ? rowOrder[0] : rowOrder[1]].value = targetValue;
   }
   return board;
-}
+};
 
-export function generateBandBoard(
-  params: BandParams = {},
-): Board {
-  const base = generateBandBoardBase(params);
-  if (params.scanDirection === "vertical") {
+export const generateBandBoard = (params: BandParams = {}): Board => {
+  let scanDirection = params.scanDirection;
+  if (!scanDirection) {
+    scanDirection = randomFrom(0, 1) === 0 ? "horizontal" : "vertical";
+  }
+  const base = generateBandBoardBase({
+    ...params,
+    scanDirection: "horizontal",
+  });
+  if (scanDirection === "vertical") {
     return transposeBoard(base);
   }
   return base;
-}
+};

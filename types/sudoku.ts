@@ -46,10 +46,13 @@ export interface CellCoords {
 
 export type CellCounts = Record<number, number>;
 
-export interface BandParams {
+export interface GeneratorParams {
   x?: number;
   y?: number;
   targetValue?: CellValue;
+}
+
+export interface BandParams extends GeneratorParams {
   order?: "increasing" | "decreasing";
   scanDirection?: "horizontal" | "vertical";
 }

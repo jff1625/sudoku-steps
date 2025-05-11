@@ -3,7 +3,7 @@ import { transposeBoard } from "./utils/transposeBoard.ts";
 import { randomFrom } from "../utils/randomFrom.ts";
 import type { BandParams, Board, CellValue } from "../types/sudoku.ts";
 
-function generateHorizontalBand2dBoard(params: BandParams = {}): Board {
+const generateHorizontalBand2dBoard = (params: BandParams = {}): Board => {
   const board: Board = createEmptyBoard();
   const x = params.x ?? randomFrom(0, 8);
   const y = params.y ?? randomFrom(0, 8);
@@ -92,16 +92,22 @@ function generateHorizontalBand2dBoard(params: BandParams = {}): Board {
   }
 
   return board;
-}
+};
 
-export function generateBand2dBoard(params: BandParams = {}): Board {
-  if (params.scanDirection === "vertical") {
-    // Generate as horizontal, then transpose
+export const generateBand2dBoard = (params: BandParams = {}): Board => {
+  let scanDirection = params.scanDirection;
+  if (!scanDirection) {
+    scanDirection = randomFrom(0, 1) === 0 ? "horizontal" : "vertical";
+  }
+  if (scanDirection === "vertical") {
     const base = generateHorizontalBand2dBoard({
       ...params,
       scanDirection: "horizontal",
     });
     return transposeBoard(base);
   }
-  return generateHorizontalBand2dBoard(params);
-}
+  return generateHorizontalBand2dBoard({
+    ...params,
+    scanDirection: "horizontal",
+  });
+};

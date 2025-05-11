@@ -2,6 +2,7 @@ import { useState } from "preact/hooks";
 import { GAME_MODE_DETAILS, GAME_MODES } from "../constants.ts";
 import { SudokuGame } from "./SudokuGame.tsx";
 import type { GameMode } from "../types/sudoku.ts";
+import { eraserEnabled, padSelectedNumber, pencilEnabled } from "../signals.ts";
 
 export const HomeIsland = () => {
   const [selectedMode, setSelectedMode] = useState<GameMode>("normal");
@@ -15,6 +16,9 @@ export const HomeIsland = () => {
   const handleStart = () => {
     setShowLiveGame(true);
     setResetKey((k) => k + 1);
+    padSelectedNumber.value = "";
+    pencilEnabled.value = false;
+    eraserEnabled.value = false;
   };
 
   return (

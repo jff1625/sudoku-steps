@@ -1,12 +1,12 @@
 import { createEmptyBoard } from "./utils/createEmptyBoard.ts";
 import { randomFrom } from "../utils/randomFrom.ts";
-import type { BandParams, Board, SudokuNumbers } from "../types/sudoku.ts";
+import type { Board, GeneratorParams, SudokuNumbers } from "../types/sudoku.ts";
 
 // Generate a board for the 'single-candidate' mode
-export function generateSingleCandidateBoard(
-  params: BandParams = {},
+export const generateSingleCandidateBoard = (
+  params: GeneratorParams = {},
   rng: (min: number, max: number) => number = randomFrom,
-): Board {
+): Board => {
   const board: Board = createEmptyBoard();
   const x = params.x ?? rng(0, 8);
   const y = params.y ?? rng(0, 8);
@@ -59,4 +59,4 @@ export function generateSingleCandidateBoard(
 
   // Target cell remains empty
   return board;
-}
+};
