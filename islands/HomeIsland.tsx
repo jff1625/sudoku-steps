@@ -1,6 +1,5 @@
-// Update the import path below to match the actual location of band.ts
-import { BAND_EXAMPLE } from "../constants/exampleBoards/band.ts";
-import { SudokuExample } from "./SudokuExample.tsx";
+// import { BAND_EXAMPLE } from "../constants/exampleBoards/band.ts";
+// import { SudokuExample } from "./SudokuExample.tsx";
 import { GameModeSelector } from "../components/GameModeSelector.tsx";
 import { useState } from "preact/hooks";
 import type { GameMode } from "../types/sudoku.ts";
@@ -12,12 +11,22 @@ export const HomeIsland = () => {
   const [gameKey, setGameKey] = useState(0);
   const [showGame, setShowGame] = useState(true);
 
+  console.log(
+    "HomeIsland render. showGame:",
+    showGame,
+    "gameMode:",
+    gameMode,
+    "showExample:",
+    showExample,
+  );
+
   return (
     <div class="w-full flex flex-col items-center justify-center">
-      <div class="max-w-xl w-full flex flex-col items-center mt-6 mb-2">
-        <p class="text-center text-gray-700 text-sm sm:text-base max-w-md mt-4 mb-4">
+      <div class="max-w-xl w-full flex flex-col items-center mb-2">
+        <p class="text-center text-gray-700 text-sm sm:text-base  mt-4 mb-4">
           Sudoku Steps lets you practice and master specific Sudoku solving
-          techniques—one at a time—so you can tackle any puzzle with confidence.
+          techniques —one at a time— so you can tackle any puzzle with
+          confidence.
         </p>
         {/* Start/Restart selected game mode button above the board */}
         <div class="w-full max-w-xs flex flex-col items-center mb-6">
@@ -28,6 +37,7 @@ export const HomeIsland = () => {
             }`}
             onClick={() => {
               setShowGame(true);
+              setShowExample(false);
               setGameKey((k) => k + 1);
             }}
           >
@@ -41,7 +51,8 @@ export const HomeIsland = () => {
           {showExample
             ? (
               <div class="w-full flex flex-col items-center justify-center min-h-[320px] mb-6">
-                <SudokuExample example={BAND_EXAMPLE} />
+                {/* <SudokuExample example={BAND_EXAMPLE} /> */}
+                example goes here
               </div>
             )
             : (
