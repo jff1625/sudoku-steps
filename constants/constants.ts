@@ -7,7 +7,7 @@ export const GAME_MODES: GameMode[] = [
   "band",
   "band-2d",
   "single-candidate",
-  "mock-1",
+  "elimination",
   "mock-2",
   "mock-3",
   "mock-4",
@@ -54,12 +54,14 @@ export const GAME_MODE_DETAILS: Record<
       "Identify the target cell and place the correct number to win.",
     example: "If a cell can only be 5, write 5 there.",
   },
-  "mock-1": {
-    name: "Mock Mode 1",
-    description: "This is a mock mode for UI testing.",
+  elimination: {
+    name: "Elimination",
+    description:
+      "Eliminate possibilities in one box to reach a conclusion in another box.",
     instructions:
       "Identify the target cell and place the correct number to win.",
-    example: "Example for mock mode 1.",
+    example:
+      "Where you can restrict the possibility of a number to a group of cells, you can use the certainty of it being in that group to eliminate it from somewhere else on the board.",
   },
   "mock-2": {
     name: "Mock Mode 2",

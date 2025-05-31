@@ -55,12 +55,16 @@ export interface BandParams extends GeneratorParams {
   scanDirection?: "horizontal" | "vertical";
 }
 
+export interface EliminationParams extends GeneratorParams {
+  axisDirection?: "horizontal" | "vertical";
+}
+
 export type GameMode =
   | "normal"
   | "band"
   | "band-2d"
   | "single-candidate"
-  | "mock-1"
+  | "elimination"
   | "mock-2"
   | "mock-3"
   | "mock-4"

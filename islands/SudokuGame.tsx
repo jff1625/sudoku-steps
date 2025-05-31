@@ -10,6 +10,7 @@ import { generateSudoku } from "../generators/sudokuGenerator.ts";
 import { generateBandBoard } from "../generators/bandGenerator.ts";
 import { generateBand2dBoard } from "../generators/band2dGenerator.ts";
 import { generateSingleCandidateBoard } from "../generators/singleCandidateGenerator.ts";
+import { generateEliminationBoard } from "../generators/eliminationGenerator.ts";
 
 import { randomFrom } from "../utils/randomFrom.ts";
 
@@ -49,6 +50,16 @@ export const SudokuGame = (
         const targetValue = randomFrom(1, 9) as SudokuNumbers;
         return {
           board: generateSingleCandidateBoard({ x, y, targetValue }),
+          targetCell: { x, y },
+          winCondition: () => targetCellValue.value === targetValue,
+        };
+      })
+      .with("elimination", () => {
+        const x = randomFrom(0, 8);
+        const y = randomFrom(0, 8);
+        const targetValue = randomFrom(1, 9) as SudokuNumbers;
+        return {
+          board: generateEliminationBoard({ x, y, targetValue }),
           targetCell: { x, y },
           winCondition: () => targetCellValue.value === targetValue,
         };

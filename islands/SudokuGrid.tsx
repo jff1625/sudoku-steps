@@ -16,6 +16,7 @@ import {
   targetCellValue,
 } from "../signals.ts";
 import { Cell } from "./Cell.tsx";
+import { forEachCell } from "../generators/utils/forEachCell.ts";
 
 /**
  * Returns true if the cell at (x, y) is illegal (duplicate in row, col, or box)
@@ -84,13 +85,11 @@ const countCells = (board: Board): CellCounts => {
     8: 0,
     9: 0,
   };
-  for (const col of board) {
-    for (const cell of col) {
-      if (typeof cell.value === "number") {
-        counts[cell.value]++;
-      }
+  forEachCell((x, y) => {
+    if (typeof board[x][y].value === "number") {
+      counts[board[x][y].value as number]++;
     }
-  }
+  });
   return counts;
 };
 
@@ -98,12 +97,11 @@ const countCells = (board: Board): CellCounts => {
  * Returns true if any cell in the board is illegal
  */
 const hasAnyIllegalCell = (board: Board): boolean => {
-  for (let y = 0; y < 9; y++) {
-    for (let x = 0; x < 9; x++) {
-      if (isCellIllegal(board, x, y)) return true;
-    }
-  }
-  return false;
+  let found = false;
+  forEachCell((x, y) => {
+    if (!found && isCellIllegal(board, x, y)) found = true;
+  });
+  return found;
 };
 
 export const SudokuGrid = (
