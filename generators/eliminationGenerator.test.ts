@@ -24,22 +24,10 @@ describe("generateEliminationBoard", () => {
       while (i < values.length) yield values[i++];
       while (true) yield 0;
     }
-    const gen = valueGen([
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-    ]);
+    // deno-fmt-ignore
+    const gen = valueGen(
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    );
     const fakeRng = (_min: number, _max: number) => gen.next().value as number;
     const board = generateEliminationBoard(params, fakeRng);
     expect(board.map((col) => col.map((cell) => cell.value))).toEqual([
