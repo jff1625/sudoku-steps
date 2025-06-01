@@ -1,17 +1,27 @@
 import { createEmptyBoard } from "./utils/createEmptyBoard.ts";
 import { randomFrom } from "../utils/randomFrom.ts";
-import type { Board, GeneratorParams, SudokuNumbers } from "../types/sudoku.ts";
+import { transposeBoard } from "./utils/transposeBoard.ts";
+import type {
+  Board,
+  PracticeBoardOrientation,
+  PracticeBoardParams,
+  SudokuNumbers,
+} from "../types/sudoku.ts";
 
 // Generate a board for the 'single-candidate' mode
 export const generateSingleCandidateBoard = (
-  params: GeneratorParams = {},
+  params: PracticeBoardParams = {},
   rng: (min: number, max: number) => number = randomFrom,
 ): Board => {
-  const board: Board = createEmptyBoard();
-  const x = params.x ?? rng(0, 8);
-  const y = params.y ?? rng(0, 8);
-  const targetValue = params.targetValue ?? rng(1, 9) as SudokuNumbers;
+  const {
+    orientation =
+      (rng(0, 1) === 0 ? "horizontal" : "vertical") as PracticeBoardOrientation,
+    x = rng(0, 8),
+    y = rng(0, 8),
+    targetValue = rng(1, 9) as SudokuNumbers,
+  } = params;
 
+  const board: Board = createEmptyBoard();
   // Place all other numbers (1-9 except targetValue) in the same row, col, or box as (x, y)
   const others: SudokuNumbers[] = [1, 2, 3, 4, 5, 6, 7, 8, 9].filter((n) =>
     n !== targetValue
@@ -58,5 +68,9 @@ export const generateSingleCandidateBoard = (
   }
 
   // Target cell remains empty
+  // Transpose if orientation is vertical
+  if (orientation === "vertical") {
+    return transposeBoard(board);
+  }
   return board;
 };

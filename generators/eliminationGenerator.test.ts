@@ -1,6 +1,7 @@
 import { generateEliminationBoard } from "./eliminationGenerator.ts";
 import { BOARD_SIZE } from "../constants/constants.ts";
 import { describe, expect, it } from "vitest";
+import { PracticeBoardParams } from "../types/sudoku.ts";
 
 describe("generateEliminationBoard", () => {
   it("returns a 9x9 board (random)", () => {
@@ -12,7 +13,12 @@ describe("generateEliminationBoard", () => {
   });
 
   it("matches the expected board for fixed params and rng", () => {
-    const params = { x: 3, y: 4, targetValue: 7 as const };
+    const params: Required<PracticeBoardParams> = {
+      x: 3,
+      y: 4,
+      targetValue: 7,
+      orientation: "vertical",
+    };
     function* valueGen(values: number[]) {
       let i = 0;
       while (i < values.length) yield values[i++];

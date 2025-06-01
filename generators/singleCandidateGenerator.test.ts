@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { generateSingleCandidateBoard } from "./singleCandidateGenerator.ts";
-import type { GeneratorParams } from "../types/sudoku.ts";
+import type { PracticeBoardParams } from "../types/sudoku.ts";
 
 const BOARD_SIZE = 9;
 
@@ -14,20 +14,22 @@ describe("singleCandidateGenerator", () => {
   });
 
   it("target cell is empty", () => {
-    const params: Required<GeneratorParams> = {
+    const params: Required<PracticeBoardParams> = {
       x: 4,
       y: 4,
       targetValue: 7,
+      orientation: "horizontal",
     };
     const board = generateSingleCandidateBoard(params);
     expect(board[params.x][params.y].value).toBe("");
   });
 
   it("all other numbers appear exactly once", () => {
-    const params: Required<GeneratorParams> = {
+    const params: Required<PracticeBoardParams> = {
       x: 4,
       y: 4,
       targetValue: 7,
+      orientation: "horizontal",
     };
     const board = generateSingleCandidateBoard(params);
     for (let n = 1; n <= 9; n++) {
@@ -43,10 +45,11 @@ describe("singleCandidateGenerator", () => {
   });
 
   it("all placements are in row, col, or box of target cell", () => {
-    const params: Required<GeneratorParams> = {
+    const params: Required<PracticeBoardParams> = {
       x: 4,
       y: 4,
       targetValue: 7,
+      orientation: "horizontal",
     };
     const board = generateSingleCandidateBoard(params);
     for (let x = 0; x < 9; x++) {
@@ -69,11 +72,13 @@ describe("singleCandidateGenerator", () => {
       while (i < values.length) yield values[i++];
       while (true) yield 0;
     }
-    const params: Required<GeneratorParams> = {
+    const params: Required<PracticeBoardParams> = {
       x: 4,
       y: 4,
       targetValue: 1,
+      orientation: "horizontal",
     };
+
     it("produces expected board for all zeros rng", () => {
       const gen = valueGen([
         0,
@@ -200,6 +205,7 @@ describe("singleCandidateGenerator", () => {
         ]
       `);
     });
+
     it("produces expected board for ascending rng", () => {
       const gen = valueGen([
         0,

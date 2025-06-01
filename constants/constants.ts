@@ -8,7 +8,7 @@ export const GAME_MODES: GameMode[] = [
   "band-2d",
   "single-candidate",
   "elimination",
-  "mock-2",
+  "missing-number",
   "mock-3",
   "mock-4",
   "mock-5",
@@ -63,12 +63,11 @@ export const GAME_MODE_DETAILS: Record<
     example:
       "Where you can restrict the possibility of a number to a group of cells, you can use the certainty of it being in that group to eliminate it from somewhere else on the board.",
   },
-  "mock-2": {
-    name: "Mock Mode 2",
-    description: "This is a mock mode for UI testing.",
+  "missing-number": {
+    name: "Missing Number",
+    description: "Find the missing number in a nearly complete row.",
     instructions:
-      "Identify the target cell and place the correct number to win.",
-    example: "Example for mock mode 2.",
+      "Fill in the missing number in the target cell. One other cell in the row is also blank, and the missing number appears elsewhere in the same column.",
   },
   "mock-3": {
     name: "Mock Mode 3",

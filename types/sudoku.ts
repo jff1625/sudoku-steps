@@ -44,28 +44,13 @@ export interface CellCoords {
 
 export type CellCounts = Record<number, number>;
 
-export interface GeneratorParams {
-  x?: number;
-  y?: number;
-  targetValue?: CellValue;
-}
-
-export interface BandParams extends GeneratorParams {
-  order?: "increasing" | "decreasing";
-  scanDirection?: "horizontal" | "vertical";
-}
-
-export interface EliminationParams extends GeneratorParams {
-  axisDirection?: "horizontal" | "vertical";
-}
-
 export type GameMode =
   | "normal"
   | "band"
   | "band-2d"
   | "single-candidate"
   | "elimination"
-  | "mock-2"
+  | "missing-number"
   | "mock-3"
   | "mock-4"
   | "mock-5"
@@ -93,3 +78,18 @@ export interface ExampleBoard {
 }
 
 export type ExampleSequence = ExampleStep[];
+
+export type PracticeBoardOrientation = "horizontal" | "vertical";
+
+export interface PracticeBoardParams {
+  x?: number;
+  y?: number;
+  targetValue?: SudokuNumbers;
+  orientation?: PracticeBoardOrientation;
+}
+
+export interface BandPracticeParams extends PracticeBoardParams {
+  order?: "increasing" | "decreasing";
+}
+
+export type NormalParams = Record<string, never>;

@@ -1,27 +1,40 @@
 import { createEmptyBoard } from "./utils/createEmptyBoard.ts";
 import { transposeBoard } from "./utils/transposeBoard.ts";
 import { randomFrom } from "../utils/randomFrom.ts";
-import type { BandParams, Board, CellValue } from "../types/sudoku.ts";
+import type {
+  BandPracticeParams,
+  Board,
+  PracticeBoardOrientation,
+  SudokuNumbers,
+} from "../types/sudoku.ts";
 
-const generateBandBoardBase = (params: BandParams = {}): Board => {
+/**
+ * Generate a board for the 'band' mode, with optional orientation (horizontal/vertical).
+ */
+export const generateBandBoard = (
+  params: BandPracticeParams = {},
+  rng: (min: number, max: number) => number = randomFrom,
+): Board => {
+  const {
+    orientation =
+      (rng(0, 1) === 0 ? "horizontal" : "vertical") as PracticeBoardOrientation,
+    x = rng(0, 8),
+    y = rng(0, 8),
+    targetValue = rng(1, 9) as SudokuNumbers,
+    order = "increasing",
+  } = params;
+
   const board: Board = createEmptyBoard();
-  const x = params.x ?? randomFrom(0, 8);
-  const y = params.y ?? randomFrom(0, 8);
   const colBand = Math.floor(x / 3) * 3;
   const rowBand = Math.floor(y / 3) * 3;
-  const targetValue = params.targetValue ?? randomFrom(1, 9) as CellValue;
-  const order = params.order ?? "increasing";
-
-  // Set the target cell value
-  // board[x][y].value = targetValue;
 
   // 2. Fill the other two cells in the same row of the target box with two different numbers
-  const used = new Set<CellValue>([targetValue]);
+  const used = new Set<SudokuNumbers>([targetValue]);
   for (let cx = colBand; cx < colBand + 3; cx++) {
     if (cx === x) continue;
-    let n: CellValue;
+    let n: SudokuNumbers;
     do {
-      n = randomFrom(1, 9) as CellValue;
+      n = rng(1, 9) as SudokuNumbers;
     } while (used.has(n));
     board[cx][y].value = n;
     used.add(n);
@@ -45,20 +58,10 @@ const generateBandBoardBase = (params: BandParams = {}): Board => {
     const chosenCol = colChoices[0];
     board[chosenCol][i === 0 ? rowOrder[0] : rowOrder[1]].value = targetValue;
   }
-  return board;
-};
 
-export const generateBandBoard = (params: BandParams = {}): Board => {
-  let scanDirection = params.scanDirection;
-  if (!scanDirection) {
-    scanDirection = randomFrom(0, 1) === 0 ? "horizontal" : "vertical";
+  // Transpose if orientation is vertical
+  if (orientation === "vertical") {
+    return transposeBoard(board);
   }
-  const base = generateBandBoardBase({
-    ...params,
-    scanDirection: "horizontal",
-  });
-  if (scanDirection === "vertical") {
-    return transposeBoard(base);
-  }
-  return base;
+  return board;
 };

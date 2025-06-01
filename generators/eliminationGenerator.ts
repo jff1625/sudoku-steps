@@ -2,7 +2,8 @@ import { createEmptyBoard } from "./utils/createEmptyBoard.ts";
 import { fillBoard } from "./utils/fillBoard.ts";
 import type {
   Board,
-  EliminationParams,
+  PracticeBoardOrientation,
+  PracticeBoardParams,
   SudokuNumbers,
 } from "../types/sudoku.ts";
 import { randomFrom } from "../utils/randomFrom.ts";
@@ -13,16 +14,20 @@ import { transposeBoard } from "./utils/transposeBoard.ts";
  * Generate a board for the 'elimination' mode by starting from a valid filled board and erasing cells as needed.
  */
 export const generateEliminationBoard = (
-  params: EliminationParams = {},
+  params: PracticeBoardParams = {},
   rng: (min: number, max: number) => number = randomFrom,
 ): Board => {
-  // Choose axisDirection randomly if not provided
-  const axisDirection = params.axisDirection ??
-    (rng(0, 1) === 0 ? "vertical" : "horizontal");
-  // Choose target cell and value using rng if not provided
-  const targetCol = typeof params.x === "number" ? params.x : rng(0, 8);
-  const targetRow = typeof params.y === "number" ? params.y : rng(0, 8);
-  const targetValue = params.targetValue ?? rng(1, 9) as SudokuNumbers;
+  // Use destructuring with defaults for all params
+  const {
+    orientation =
+      (rng(0, 1) === 0 ? "vertical" : "horizontal") as PracticeBoardOrientation,
+    x = rng(0, 8),
+    y = rng(0, 8),
+    targetValue = rng(1, 9) as SudokuNumbers,
+  } = params;
+
+  const targetCol = x;
+  const targetRow = y;
   const board: Board = createEmptyBoard();
   board[targetCol][targetRow].value = targetValue;
   fillBoard(board, rng);
@@ -105,7 +110,7 @@ export const generateEliminationBoard = (
   }
 
   // Rotate if needed
-  if (axisDirection === "horizontal") {
+  if (orientation === "horizontal") {
     return transposeBoard(board);
   }
   return board;

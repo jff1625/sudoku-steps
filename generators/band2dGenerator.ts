@@ -1,18 +1,32 @@
 import { createEmptyBoard } from "./utils/createEmptyBoard.ts";
 import { transposeBoard } from "./utils/transposeBoard.ts";
 import { randomFrom } from "../utils/randomFrom.ts";
-import type { BandParams, Board, CellValue } from "../types/sudoku.ts";
+import type {
+  BandPracticeParams,
+  Board,
+  PracticeBoardOrientation,
+  SudokuNumbers,
+} from "../types/sudoku.ts";
 
-const generateHorizontalBand2dBoard = (params: BandParams = {}): Board => {
+/**
+ * Generate a board for the 'band-2d' mode, with optional orientation (horizontal/vertical).
+ */
+export const generateBand2dBoard = (
+  params: BandPracticeParams = {},
+  rng: (min: number, max: number) => number = randomFrom,
+): Board => {
+  const {
+    orientation =
+      (rng(0, 1) === 0 ? "horizontal" : "vertical") as PracticeBoardOrientation,
+    x = rng(0, 8),
+    y = rng(0, 8),
+    targetValue = rng(1, 9) as SudokuNumbers,
+  } = params;
+
+  // --- Begin horizontal band2d logic (formerly generateHorizontalBand2dBoard) ---
   const board: Board = createEmptyBoard();
-  const x = params.x ?? randomFrom(0, 8);
-  const y = params.y ?? randomFrom(0, 8);
   const colBand = Math.floor(x / 3) * 3;
   const rowBand = Math.floor(y / 3) * 3;
-  const targetValue = params.targetValue ?? randomFrom(1, 9) as CellValue;
-
-  console.log("Target cell:", { x, y, targetValue });
-  // board[x][y].value = targetValue; // Uncomment if you want to prefill
 
   // 1. Place one blocking number in the same box as the target cell (not at (x, y)), and in the same row as the target cell
   let blockPlaced = false;
@@ -22,13 +36,12 @@ const generateHorizontalBand2dBoard = (params: BandParams = {}): Board => {
     let blockValue;
     let attempts = 0;
     do {
-      blockValue = randomFrom(1, 9) as CellValue;
+      blockValue = rng(1, 9) as SudokuNumbers;
       attempts++;
       if (attempts > 20) break;
     } while (blockValue === targetValue);
     board[cx][y].value = blockValue;
     blockCoords = { cx, cy: y };
-    console.log("Placed blocking number", blockValue, "at", { cx, cy: y });
     blockPlaced = true;
   }
 
@@ -38,27 +51,19 @@ const generateHorizontalBand2dBoard = (params: BandParams = {}): Board => {
     if (bx === colBand) continue;
     mainBandBoxes.push({ bx, by: rowBand });
   }
-  // Track used rows and columns for targetValue
   const usedRows = new Set<number>([y]);
   const usedCols = new Set<number>([x]);
-  // Place targetValue in a random cell in each of these two boxes
   for (const { bx, by } of mainBandBoxes) {
     let cx, cy, attempts = 0;
     do {
-      cx = bx + randomFrom(0, 2);
-      cy = by + randomFrom(0, 2);
+      cx = bx + rng(0, 2);
+      cy = by + rng(0, 2);
       attempts++;
       if (attempts > 20) break;
     } while (usedRows.has(cy) || usedCols.has(cx));
     board[cx][cy].value = targetValue;
     usedRows.add(cy);
     usedCols.add(cx);
-    console.log("Placed targetValue (main band)", targetValue, "at", {
-      cx,
-      cy,
-      bx,
-      by,
-    });
   }
 
   // 3. Place the targetValue in a perpendicular band (not in the same box as the target cell)
@@ -71,10 +76,10 @@ const generateHorizontalBand2dBoard = (params: BandParams = {}): Board => {
     let cx, cy, attempts = 0;
     let idx;
     do {
-      idx = randomFrom(0, perpBandBoxes.length - 1);
+      idx = rng(0, perpBandBoxes.length - 1);
       const { bx, by } = perpBandBoxes[idx];
-      cx = bx + randomFrom(0, 2);
-      cy = by + randomFrom(0, 2);
+      cx = bx + rng(0, 2);
+      cy = by + rng(0, 2);
       attempts++;
       if (attempts > 20) break;
     } while (
@@ -85,29 +90,12 @@ const generateHorizontalBand2dBoard = (params: BandParams = {}): Board => {
     board[cx][cy].value = targetValue;
     usedRows.add(cy);
     usedCols.add(cx);
-    console.log("Placed targetValue (perpendicular band)", targetValue, "at", {
-      cx,
-      cy,
-    });
   }
+  // --- End horizontal band2d logic ---
 
+  // Transpose if orientation is vertical
+  if (orientation === "vertical") {
+    return transposeBoard(board);
+  }
   return board;
-};
-
-export const generateBand2dBoard = (params: BandParams = {}): Board => {
-  let scanDirection = params.scanDirection;
-  if (!scanDirection) {
-    scanDirection = randomFrom(0, 1) === 0 ? "horizontal" : "vertical";
-  }
-  if (scanDirection === "vertical") {
-    const base = generateHorizontalBand2dBoard({
-      ...params,
-      scanDirection: "horizontal",
-    });
-    return transposeBoard(base);
-  }
-  return generateHorizontalBand2dBoard({
-    ...params,
-    scanDirection: "horizontal",
-  });
 };

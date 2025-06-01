@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { generateBandBoard } from "./bandGenerator.ts";
 import { BOARD_SIZE } from "../constants/constants.ts";
-import type { BandParams } from "../types/sudoku.ts";
+import type { BandPracticeParams } from "../types/sudoku.ts";
 
 describe("generateBandBoard", () => {
   it("returns a 9x9 board (random)", () => {
@@ -13,13 +13,12 @@ describe("generateBandBoard", () => {
   });
 
   it("returns the expected 9x9 board (deterministic)", () => {
-    type RequiredBandParams = Required<BandParams>;
-    const params: RequiredBandParams = {
+    const params: Required<BandPracticeParams> = {
       x: 1,
       y: 2,
       targetValue: 5,
       order: "increasing",
-      scanDirection: "horizontal",
+      orientation: "horizontal",
     };
     const board = generateBandBoard(params);
     expect(board.length).toBe(BOARD_SIZE);
