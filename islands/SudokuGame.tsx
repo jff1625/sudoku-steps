@@ -23,65 +23,39 @@ export const SudokuGame = (
   console.log("SudokuGame render");
   const gridRef = useRef<HTMLTableElement>(null);
 
-  const { board, targetCell, winCondition } = useMemo(() =>
-    match(gameMode)
-      .with("band", () => {
-        const x = randomFrom(0, 8);
-        const y = randomFrom(0, 8);
-        const targetValue = randomFrom(1, 9) as SudokuNumbers;
-        return {
-          board: generateBandBoard({ x, y, targetValue }),
-          targetCell: { x, y },
-          winCondition: () => targetCellValue.value === targetValue,
-        };
-      })
-      .with("band-2d", () => {
-        const x = randomFrom(0, 8);
-        const y = randomFrom(0, 8);
-        const targetValue = randomFrom(1, 9) as SudokuNumbers;
-        return {
-          board: generateBand2dBoard({ x, y, targetValue }),
-          targetCell: { x, y },
-          winCondition: () => targetCellValue.value === targetValue,
-        };
-      })
-      .with("single-candidate", () => {
-        const x = randomFrom(0, 8);
-        const y = randomFrom(0, 8);
-        const targetValue = randomFrom(1, 9) as SudokuNumbers;
-        return {
-          board: generateSingleCandidateBoard({ x, y, targetValue }),
-          targetCell: { x, y },
-          winCondition: () => targetCellValue.value === targetValue,
-        };
-      })
-      .with("elimination", () => {
-        const x = randomFrom(0, 8);
-        const y = randomFrom(0, 8);
-        const targetValue = randomFrom(1, 9) as SudokuNumbers;
-        return {
-          board: generateEliminationBoard({ x, y, targetValue }),
-          targetCell: { x, y },
-          winCondition: () => targetCellValue.value === targetValue,
-        };
-      })
-      .with("missing-number", () => {
-        const x = randomFrom(0, 8);
-        const y = randomFrom(0, 8);
-        const targetValue = randomFrom(1, 9) as SudokuNumbers;
-        return {
-          board: generateMissingNumberBoard({ x, y, targetValue }),
-          targetCell: { x, y },
-          winCondition: () => targetCellValue.value === targetValue,
-        };
-      })
-      .otherwise(() => ({
+  const { board, targetCell, winCondition } = useMemo(() => {
+    // "normal" mode is a special case with its own params
+    if (gameMode === "normal") {
+      return {
         board: generateSudoku(),
         targetCell: null,
         winCondition: () =>
           !hasIllegalCells.value &&
           Object.values(cellCounts.value).every((v) => v === 9),
-      })), [gameMode]);
+      };
+    }
+
+    // "practice" modes all have the same params
+    const params = {
+      x: randomFrom(0, 8),
+      y: randomFrom(0, 8),
+      targetValue: randomFrom(1, 9) as SudokuNumbers,
+    };
+
+    const board = match(gameMode)
+      .with("band", () => generateBandBoard(params))
+      .with("band-2d", () => generateBand2dBoard(params))
+      .with("single-candidate", () => generateSingleCandidateBoard(params))
+      .with("elimination", () => generateEliminationBoard(params))
+      .with("missing-number", () => generateMissingNumberBoard(params))
+      .exhaustive();
+
+    return {
+      board,
+      targetCell: { x: params.x, y: params.y },
+      winCondition: () => targetCellValue.value === params.targetValue,
+    };
+  }, [gameMode]);
 
   const [isWin, setIsWin] = useState(false);
 

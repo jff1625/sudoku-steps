@@ -50,11 +50,7 @@ export type GameMode =
   | "band-2d"
   | "single-candidate"
   | "elimination"
-  | "missing-number"
-  | "mock-3"
-  | "mock-4"
-  | "mock-5"
-  | "mock-6";
+  | "missing-number";
 
 export type ExampleOverlay =
   | { type: "circle"; cell: CellCoords; color?: string }

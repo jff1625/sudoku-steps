@@ -9,10 +9,6 @@ export const GAME_MODES: GameMode[] = [
   "single-candidate",
   "elimination",
   "missing-number",
-  "mock-3",
-  "mock-4",
-  "mock-5",
-  "mock-6",
 ];
 
 export const GAME_MODE_DETAILS: Record<
@@ -68,33 +64,5 @@ export const GAME_MODE_DETAILS: Record<
     description: "Find the missing number in a nearly complete row.",
     instructions:
       "Fill in the missing number in the target cell. One other cell in the row is also blank, and the missing number appears elsewhere in the same column.",
-  },
-  "mock-3": {
-    name: "Mock Mode 3",
-    description: "This is a mock mode for UI testing.",
-    instructions:
-      "Identify the target cell and place the correct number to win.",
-    example: "Example for mock mode 3.",
-  },
-  "mock-4": {
-    name: "Mock Mode 4",
-    description: "This is a mock mode for UI testing.",
-    instructions:
-      "Identify the target cell and place the correct number to win.",
-    example: "Example for mock mode 4.",
-  },
-  "mock-5": {
-    name: "Mock Mode 5",
-    description: "This is a mock mode for UI testing.",
-    instructions:
-      "Identify the target cell and place the correct number to win.",
-    example: "Example for mock mode 5.",
-  },
-  "mock-6": {
-    name: "Mock Mode 6",
-    description: "This is a mock mode for UI testing.",
-    instructions:
-      "Identify the target cell and place the correct number to win.",
-    example: "Example for mock mode 6.",
   },
 };
