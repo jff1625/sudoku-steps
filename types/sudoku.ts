@@ -1,4 +1,7 @@
 import type { RefObject } from "preact";
+import { GAME_MODES } from "../constants/constants.ts";
+
+export type GameMode = typeof GAME_MODES[number];
 
 export interface SudokuGameProps {
   gameMode: GameMode;
@@ -43,14 +46,6 @@ export interface CellCoords {
 }
 
 export type CellCounts = Record<number, number>;
-
-export type GameMode =
-  | "normal"
-  | "band"
-  | "band-2d"
-  | "single-candidate"
-  | "elimination"
-  | "missing-number";
 
 export type ExampleOverlay =
   | { type: "circle"; cell: CellCoords; color?: string }

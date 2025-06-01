@@ -7,7 +7,7 @@ import { SudokuGame } from "./SudokuGame.tsx";
 
 export const HomeIsland = () => {
   const [showExample, setShowExample] = useState(false);
-  const [gameMode, setGameMode] = useState<GameMode>("normal");
+  const [gameMode, setGameMode] = useState<GameMode>("naked-pair");
   const [gameKey, setGameKey] = useState(0);
   const [showGame, setShowGame] = useState(true);
 

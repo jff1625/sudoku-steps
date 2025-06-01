@@ -12,6 +12,7 @@ import { generateBand2dBoard } from "../generators/band2dGenerator.ts";
 import { generateSingleCandidateBoard } from "../generators/singleCandidateGenerator.ts";
 import { generateEliminationBoard } from "../generators/eliminationGenerator.ts";
 import { generateMissingNumberBoard } from "../generators/missingNumberGenerator.ts";
+import { generateNakedPairBoard } from "../generators/nakedPairGenerator.ts";
 
 import { randomFrom } from "../utils/randomFrom.ts";
 
@@ -32,6 +33,30 @@ export const SudokuGame = (
         winCondition: () =>
           !hasIllegalCells.value &&
           Object.values(cellCounts.value).every((v) => v === 9),
+      };
+    }
+
+    // Add naked-pair mode
+    if (gameMode === "naked-pair") {
+      // For now, use default params (random unitType, unitIndex, etc)
+      // You may want to expose these in the UI for more control
+      const params = {};
+      const board = generateNakedPairBoard(params);
+      // Find the two empty cells (the naked pair)
+      const pairCells: { x: number; y: number }[] = [];
+      for (let x = 0; x < 9; x++) {
+        for (let y = 0; y < 9; y++) {
+          if (board[x][y].value === "") {
+            pairCells.push({ x, y });
+          }
+        }
+      }
+      // Use the first as targetCell for now
+      return {
+        board,
+        targetCell: pairCells[0] ?? null,
+        winCondition: () =>
+          pairCells.every(({ x, y }) => board[x][y].value !== ""),
       };
     }
 

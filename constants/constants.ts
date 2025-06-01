@@ -1,15 +1,16 @@
 import type { GameMode } from "../types/sudoku.ts";
 
-export const BOARD_SIZE = 9;
-
-export const GAME_MODES: GameMode[] = [
+export const GAME_MODES = [
   "normal",
   "band",
   "band-2d",
   "single-candidate",
   "elimination",
   "missing-number",
-];
+  "naked-pair",
+] as const;
+
+export const BOARD_SIZE = 9;
 
 export const GAME_MODE_DETAILS: Record<
   GameMode,
@@ -64,5 +65,10 @@ export const GAME_MODE_DETAILS: Record<
     description: "Find the missing number in a nearly complete row.",
     instructions:
       "Fill in the missing number in the target cell. One other cell in the row is also blank, and the missing number appears elsewhere in the same column.",
+  },
+  "naked-pair": {
+    name: "Naked Pair",
+    description: "...",
+    instructions: "...",
   },
 };
