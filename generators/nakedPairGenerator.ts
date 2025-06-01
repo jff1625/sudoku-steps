@@ -126,7 +126,7 @@ export const generateNakedPairBoard = (
     }
   });
 
-  // In the target row, erase all except the fourth number
+  // In the target row, erase all except that fourth number
   for (let col = 0; col < 9; col++) {
     if (col === x) continue; // skip the target cell itself
     if (board[col][y].value !== fourthValue) {
