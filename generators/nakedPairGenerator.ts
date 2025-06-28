@@ -1,5 +1,6 @@
 import type {
   Board,
+  CellData,
   PracticeBoardParams,
   SudokuNumbers,
 } from "../types/sudoku.ts";

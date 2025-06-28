@@ -67,6 +67,8 @@ export const SudokuGame = (
       targetValue: randomFrom(1, 9) as SudokuNumbers,
     };
 
+    console.log("SudokuGame target cell:", params);
+
     const board = match(gameMode)
       .with("band", () => generateBandBoard(params))
       .with("band-2d", () => generateBand2dBoard(params))
@@ -85,6 +87,7 @@ export const SudokuGame = (
   const [isWin, setIsWin] = useState(false);
 
   useEffect(() => {
+    console.log("SudokuGame useEffect - checking win condition");
     setIsWin(winCondition());
   }, [winCondition, cellCounts.value, hasIllegalCells.value]);
 

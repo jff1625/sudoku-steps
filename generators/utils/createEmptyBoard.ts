@@ -5,9 +5,11 @@ export function createEmptyBoard(): Board {
   // Outer array is columns, inner array is rows
   return Array.from(
     { length: BOARD_SIZE },
-    () =>
-      Array.from({ length: BOARD_SIZE }, () => ({
+    (_col, colIdx) =>
+      Array.from({ length: BOARD_SIZE }, (_row, rowIdx) => ({
         value: "",
+        x: colIdx,
+        y: rowIdx,
         pencilmarks: [],
       } as CellData)),
   ) as Board;

@@ -2,7 +2,7 @@ import { useState } from "preact/hooks";
 import type {
   Board,
   CellCounts,
-  CellUpdateProps,
+  CellData,
   CellValue,
   ExampleOverlay,
   SudokuGridProps,
@@ -111,7 +111,7 @@ export const SudokuGrid = (
 ) => {
   const [board, setBoard] = useState<Board>(initialBoard);
 
-  const handleCellChange = (props: CellUpdateProps) => {
+  const handleCellChange = (props: CellData) => {
     const { x, y, value, pencilmarks } = props;
     setBoard((prev) => {
       const newBoard = prev.map((col, xx) =>

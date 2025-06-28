@@ -29,7 +29,7 @@ export type Grid<T> = [
 ];
 export type Col<T> = [T, T, T, T, T, T, T, T, T];
 
-export type CellData = {
+export type CellData = CellCoords & {
   value: CellValue;
   pencilmarks: SudokuNumbers[];
 };
@@ -37,8 +37,6 @@ export type CellData = {
 export type SudokuNumbers = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
 export type CellValue = "" | SudokuNumbers;
-
-export type CellUpdateProps = CellData & CellCoords;
 
 export interface CellCoords {
   x: number;
@@ -83,4 +81,9 @@ export interface BandPracticeParams extends PracticeBoardParams {
   order?: "increasing" | "decreasing";
 }
 
-export type NormalParams = Record<string, never>;
+export interface Box {
+  index: number;
+  cells: CellData[];
+  rows: number[];
+  columns: number[];
+}

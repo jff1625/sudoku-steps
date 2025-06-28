@@ -1,6 +1,6 @@
 import type {
   Board,
-  CellUpdateProps,
+  CellData,
   CellValue,
   SudokuNumbers,
 } from "../types/sudoku.ts";
@@ -19,7 +19,7 @@ type CellProps = {
   illegal: boolean;
   highlight: boolean;
   locked: boolean;
-  onCellChange: (props: CellUpdateProps) => void;
+  onCellChange: (props: CellData) => void;
   pencilEnabled: boolean;
   eraserEnabled: boolean;
 };
